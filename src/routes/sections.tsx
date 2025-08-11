@@ -50,9 +50,10 @@ export const routesSection: RouteObject[] = [
     ),
     children: [
       { index: true, element: <DashboardPage /> },
-      { path: 'user', element: <UserPage /> },
-      { path: 'products', element: <ProductsPage /> },
-      { path: 'blog', element: <BlogPage /> },
+      { path: 'users', element: <UserPage /> },
+      { path: 'sentences', element: <ProductsPage /> },
+      { path: 'audios', element: <BlogPage /> },
+      { path: 'checked', element: <BlogPage /> },
     ],
   },
   {
@@ -62,10 +63,6 @@ export const routesSection: RouteObject[] = [
         <SignInPage />
       </AuthLayout>
     ),
-  },
-  {
-    path: '404',
-    element: <Page404 />,
   },
   { path: '*', element: <Page404 /> },
 ];
