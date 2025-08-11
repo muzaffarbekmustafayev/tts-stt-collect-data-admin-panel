@@ -18,11 +18,12 @@ import { Iconify } from 'src/components/iconify';
 export type UserProps = {
   id: string;
   name: string;
-  role: string;
-  status: string;
-  company: string;
+  telegram_id: number;
+  age: number;
+  gender: string;
+  info: string;
   avatarUrl: string;
-  isVerified: boolean;
+  createdAt: Date;
 };
 
 type UserTableRowProps = {
@@ -48,7 +49,7 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
         <TableCell padding="checkbox">
           <Checkbox disableRipple checked={selected} onChange={onSelectRow} />
         </TableCell>
-
+        <TableCell>{row.id}</TableCell>
         <TableCell component="th" scope="row">
           <Box
             sx={{
@@ -62,20 +63,27 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
           </Box>
         </TableCell>
 
-        <TableCell>{row.company}</TableCell>
+        <TableCell>
+          {
+            row.telegram_id ? row.telegram_id : '-'
+          }
+        </TableCell>
 
-        <TableCell>{row.role}</TableCell>
+        <TableCell>{row.gender}</TableCell>
+        <TableCell>{row.age}</TableCell>
 
         <TableCell align="center">
-          {row.isVerified ? (
-            <Iconify width={22} icon="solar:check-circle-bold" sx={{ color: 'success.main' }} />
+          {row.info ? (
+            <Box sx={{ maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              {row.info}
+            </Box>
           ) : (
             '-'
           )}
         </TableCell>
 
         <TableCell>
-          <Label color={(row.status === 'banned' && 'error') || 'success'}>{row.status}</Label>
+          {row.createdAt.toLocaleString()}
         </TableCell>
 
         <TableCell align="right">

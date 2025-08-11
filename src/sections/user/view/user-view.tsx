@@ -86,11 +86,13 @@ export function UserView() {
                   )
                 }
                 headLabel={[
+                  { id: 'id', label: 'Id', width: 30 },
                   { id: 'name', label: 'Name' },
-                  { id: 'company', label: 'Company' },
-                  { id: 'role', label: 'Role' },
-                  { id: 'isVerified', label: 'Verified', align: 'center' },
-                  { id: 'status', label: 'Status' },
+                  { id: 'telegram_id', label: 'Telegram id' },
+                  { id: 'gender', label: 'Gender' },
+                  { id: 'age', label: 'Age' },
+                  { id: 'info', label: 'Info' },
+                  { id: 'createdAt', label: 'Restricted At' },
                   { id: '' },
                 ]}
               />

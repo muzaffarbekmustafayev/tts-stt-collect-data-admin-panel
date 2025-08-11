@@ -21,27 +21,70 @@ export const _myAccount = {
 
 // ----------------------------------------------------------------------
 
-export const _users = [...Array(24)].map((_, index) => ({
-  id: _id(index),
-  name: _fullName(index),
-  company: _company(index),
-  isVerified: _boolean(index),
-  avatarUrl: `/assets/images/avatar/avatar-${index + 1}.webp`,
-  status: index % 4 ? 'active' : 'banned',
-  role:
-    [
-      'Leader',
-      'Hr Manager',
-      'UI Designer',
-      'UX Designer',
-      'UI/UX Designer',
-      'Project Manager',
-      'Backend Developer',
-      'Full Stack Designer',
-      'Front End Developer',
-      'Full Stack Developer',
-    ][index] || 'UI Designer',
-}));
+// export const _users = [...Array(24)].map((_, index) => ({
+//   id: _id(index),
+//   name: _fullName(index),
+//   company: _company(index),
+//   isVerified: _boolean(index),
+//   avatarUrl: `/assets/images/avatar/user.png`,
+//   status: index % 4 ? 'active' : 'banned',
+//   role:
+//     [
+//       'Leader',
+//       'Hr Manager',
+//       'UI Designer',
+//       'UX Designer',
+//       'UI/UX Designer',
+//       'Project Manager',
+//       'Backend Developer',
+//       'Full Stack Designer',
+//       'Front End Developer',
+//       'Full Stack Developer',
+//     ][index] || 'UI Designer',
+// }));
+
+export const _users = [
+  {
+    id: '1',
+    telegram_id: 123456789,
+    name: 'John Doe',
+    gender: 'Male',
+    age: 30,
+    info: 'Some info about John',
+    createdAt: new Date(),
+    avatarUrl: `/assets/images/avatar/user.png`,
+  },
+  {
+    id: '2',
+    telegram_id: 3423423,
+    name: 'Jane Smith',
+    gender: 'Female',
+    age: 28,
+    info: 'Some info about Jane',
+    createdAt: new Date(),
+    avatarUrl: `/assets/images/avatar/user.png`,
+  },
+  {
+    id: '3',
+    telegram_id: 987654321,
+    name: 'Dsds Doe',
+    gender: 'Male',
+    age: 30,
+    info: 'Some info about John',
+    createdAt: new Date(),
+    avatarUrl: `/assets/images/avatar/user.png`,
+  },
+  {
+    id: '4',
+    telegram_id: 423,
+    name: 'John Doe',
+    gender: 'Male',
+    age: 30,
+    info: 'Some info about John',
+    createdAt: new Date(),
+    avatarUrl: `/assets/images/avatar/user.png`,
+  },
+];
 
 // ----------------------------------------------------------------------
 
@@ -125,7 +168,8 @@ export const _timeline = [...Array(5)].map((_, index) => ({
     '12 Invoices have been paid',
     'Order #37745 from September',
     'New order placed #XF-2356',
-    'New order placed #XF-2346',
+    '12 Invoices have been paid',
+    'Order #37745 from September',
   ][index],
   type: `order${index + 1}`,
   time: _times(index),

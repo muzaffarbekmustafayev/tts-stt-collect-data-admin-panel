@@ -26,7 +26,7 @@ export function DashboardContent({
   return (
     <Container
       className={mergeClasses([layoutClasses.content, className])}
-      maxWidth={maxWidth}
+      maxWidth={false}
       sx={[
         (theme) => ({
           display: 'flex',
