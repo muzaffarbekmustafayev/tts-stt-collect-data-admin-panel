@@ -38,6 +38,11 @@ export const navData = [
     path: '/checked',
     icon: icon('ic-checked'),
   },
+  {
+    title: 'Admin',
+    path: '/admin',
+    icon: icon('ic-user'),
+  },
   // {
   //   title: 'Logs',
   //   path: '/logs',

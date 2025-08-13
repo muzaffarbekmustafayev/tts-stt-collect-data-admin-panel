@@ -13,10 +13,12 @@ import { DashboardLayout } from 'src/layouts/dashboard';
 // ----------------------------------------------------------------------
 
 export const DashboardPage = lazy(() => import('src/pages/dashboard'));
-export const BlogPage = lazy(() => import('src/pages/blog'));
 export const UserPage = lazy(() => import('src/pages/user'));
 export const SignInPage = lazy(() => import('src/pages/sign-in'));
-export const ProductsPage = lazy(() => import('src/pages/products'));
+export const SentencesPage = lazy(() => import('../pages/sentences'));
+export const AudiosPage = lazy(() => import('../pages/audios'));
+export const CheckedAudiosPage = lazy(() => import('../pages/checked'));
+export const AdminPage = lazy(() => import('../pages/admin'));
 export const Page404 = lazy(() => import('src/pages/page-not-found'));
 
 const renderFallback = () => (
@@ -51,9 +53,10 @@ export const routesSection: RouteObject[] = [
     children: [
       { index: true, element: <DashboardPage /> },
       { path: 'users', element: <UserPage /> },
-      { path: 'sentences', element: <ProductsPage /> },
-      { path: 'audios', element: <BlogPage /> },
-      { path: 'checked', element: <BlogPage /> },
+      { path: 'sentences', element: <SentencesPage /> },
+      { path: 'audios', element: <AudiosPage /> },
+      { path: 'checked', element: <CheckedAudiosPage /> },
+      { path: 'admin', element: <AdminPage /> },
     ],
   },
   {

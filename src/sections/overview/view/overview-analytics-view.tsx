@@ -70,12 +70,12 @@ export function OverviewAnalyticsView() {
         </Grid>
        
 
-        <Grid size={{ xs: 12, md: 6, lg: 8 }}>
+        {/* <Grid size={{ xs: 12, md: 6, lg: 8 }}>
           <AnalyticsTasks title="Tasks" list={_tasks} />
-        </Grid>
-        <Grid size={{ xs: 12, md: 6, lg: 4 }}>
+        </Grid> */}
+        {/* <Grid size={{ xs: 12, md: 6, lg: 4 }}>
           <AnalyticsOrderTimeline title="Last activity" list={_timeline} />
-        </Grid>
+        </Grid> */}
       </Grid>
     </DashboardContent>
   );
