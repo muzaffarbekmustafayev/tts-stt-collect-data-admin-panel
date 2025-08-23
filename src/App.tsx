@@ -10,9 +10,15 @@ import NotFound from './pages/NotFound'
 import { Toaster } from './components/ui/sonner'
 
 const Dashboard = lazy(() => import('@/pages/Home'))
+// const Users = lazy(() => import('@/pages/Users'))
+// const Audios = lazy(() => import('@/pages/Audios'))
+// const Sentences = lazy(() => import('@/pages/Sentences'))
 
 const routes = [
   { path: '/', component: Dashboard },
+  // { path: '/users', component: Users },
+  // { path: '/audios', component: Audios },
+  // { path: '/sentences', component: Sentences },
 ]
 
 function App() {

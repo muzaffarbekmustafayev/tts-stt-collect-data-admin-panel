@@ -1,15 +1,15 @@
 import { CheckCircle, FileText, Home, Users, Volume2, LogOut } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const Sidebar = () => {
+const Sidebar = ({ isOpen }: { isOpen: boolean }) => {
   const navigate = useNavigate();
   const currentPage = useLocation().pathname.split('/')[1] || 'dashboard';
   const changePage = (page: string) => {
     navigate(`/${page}`)
   }
   return (
-    <div className="bg-gray-900 text-white w-64 min-h-screen p-4 h-screen flex flex-col">
-      <h1 className="text-xl font-bold mb-8 text-center">STT-TTS Admin</h1>
+    <div className={`bg-gray-900 text-white min-h-screen p-4 h-screen flex flex-col transition-width duration-300 ${isOpen ? 'w-64 -left-0' : 'w-0 absolute -left-64'}`}>
+      <a href="/" className="text-xl font-bold mb-8 text-center">STT-TTS Admin</a>
       <nav className="space-y-2">
         {[
           { key: 'dashboard', icon: Home, label: 'Dashboard' },

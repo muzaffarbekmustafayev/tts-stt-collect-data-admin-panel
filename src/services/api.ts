@@ -1,7 +1,12 @@
-// API service for backend communication
-// Replace these with your actual backend endpoints
-
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001/api';
+import type {
+  AdminUser,
+  User,
+  Sentence,
+  Audio,
+  CheckedAudio,
+} from '@/types/user';
+const API_BASE_URL =
+  import.meta.env.VITE_API_URL || 'https://asror-qobulov.jprq.site';
 
 export interface ApiResponse<T> {
   data: T;
@@ -10,13 +15,13 @@ export interface ApiResponse<T> {
 }
 
 class ApiService {
-  private async request<T>(endpoint: string, options: RequestInit = {}): Promise<ApiResponse<T>> {
-    const url = `${API_BASE_URL}${endpoint}`;
-    
+  private async request<T>( endpoint: string, options: RequestInit = {}, token: string | null = null ): Promise<ApiResponse<T>> {
+    const url = `${API_BASE_URL}${endpoint}/`;
+
     const defaultHeaders = {
-      'Content-Type': 'application/json',
-      // Add authentication header if needed
-      // 'Authorization': `Bearer ${token}`,
+      'Access-Control-Allow-Origin': '*',
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: `Bearer ${token}`,
     };
 
     const config: RequestInit = {
@@ -29,44 +34,54 @@ class ApiService {
 
     try {
       const response = await fetch(url, config);
-      
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const error = await response.json();
+        throw new Error(
+          error.detail ||
+            error.message ||
+            'Something went wrong, status code: ' + response.status
+        );
       }
-      
       const data = await response.json();
-      return data;
+      return {
+        data: data,
+        success: true,
+      };
     } catch (error) {
-      console.error('API request failed:', error);
+      console.error('API request failed:', error); // TODO: remove this
       throw error;
     }
   }
 
   // Data fetching methods
   async getSentences() {
-    return this.request<any[]>('/sentences');
+    return this.request<Sentence[]>('/sentences');
   }
 
   async getUsers() {
-    return this.request<any[]>('/users');
+    return this.request<User[]>('/users');
   }
 
   async getAudios() {
-    return this.request<any[]>('/audios');
+    return this.request<Audio[]>('/audios');
   }
 
   async getCheckedAudios() {
-    return this.request<any[]>('/checked-audios');
+    return this.request<CheckedAudio[]>('/checked-audios');
   }
 
-  // Example of how to fetch all data at once
+  async getAdminUsers() {
+    return this.request<AdminUser[]>('/admin-users');
+  }
+
   async getAllData() {
     try {
-      const [sentences, users, audios, checkedAudios] = await Promise.all([
+      const [sentences, users, audios, checkedAudios, adminUsers] = await Promise.all([
         this.getSentences(),
         this.getUsers(),
         this.getAudios(),
         this.getCheckedAudios(),
+        this.getAdminUsers(),
       ]);
 
       return {
@@ -74,11 +89,31 @@ class ApiService {
         users: users.data,
         audios: audios.data,
         checked_audios: checkedAudios.data,
+        admin_users: adminUsers.data,
       };
     } catch (error) {
       console.error('Failed to fetch all data:', error);
       throw error;
     }
+  }
+
+  async getMe(token: string) {
+    return this.request<AdminUser>(
+      '/auth/me',
+      {
+        method: 'GET',
+      },
+      token
+    );
+  }
+
+  async authLogin(username: string, password: string) {
+    return this.request<{
+      token: string;
+    }>('/auth/login', {
+      method: 'POST',
+      body: new URLSearchParams({ grant_type: 'password', username, password }),
+    });
   }
 }
 

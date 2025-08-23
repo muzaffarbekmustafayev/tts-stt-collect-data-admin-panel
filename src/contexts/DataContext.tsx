@@ -1,13 +1,17 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useState, useEffect, useCallback } from 'react';
 import type { ReactNode } from 'react';
 import { useAuth } from '../hooks/useAuth';
-import { sentences, users, audios, checked_audios } from '../mockData';
+import type { AdminUser, Audio, CheckedAudio, Sentence, User, Stats } from '@/types/user';
+import { apiService } from '@/services/api';
 
 interface DataContextType {
-  usersData: any[];
-  audiosData: any[];
-  checkedAudiosData: any[];
-  sentencesData: any[];
+  currentUser: User | null;
+  usersData: User[];
+  adminUsersData: AdminUser[];
+  audiosData: Audio[];
+  checkedAudiosData: CheckedAudio[];
+  sentencesData: Sentence[];
+  stats: Stats;
   loading: boolean;
   error: string | null;
   refreshData: () => void;
@@ -15,30 +19,31 @@ interface DataContextType {
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
 
-export const useData = () => {
-  const context = useContext(DataContext);
-  if (context === undefined) {
-    throw new Error('useData must be used within a DataProvider');
-  }
-  return context;
-};
 
 interface DataProviderProps {
   children: ReactNode;
 }
 
 export const DataProvider = ({ children }: DataProviderProps) => {
-  const { user } = useAuth();
-  const [usersData, setUsersData] = useState<any[]>([]);
-  const [audiosData, setAudiosData] = useState<any[]>([]);
-  const [checkedAudiosData, setCheckedAudiosData] = useState<any[]>([]);
-  const [sentencesData, setSentencesData] = useState<any[]>([]);
+  const { token } = useAuth();
+  const [stats, setStats] = useState<Stats>({
+    sentences: 0,
+    users: 0,
+    audios: 0,
+    checked_audios: 0,
+    admins: 0
+  });
+  const [usersData, setUsersData] = useState<User[]>([]);
+  const [adminUsersData, setAdminUsersData] = useState<AdminUser[]>([]);
+  const [audiosData, setAudiosData] = useState<Audio[]>([]);
+  const [checkedAudiosData, setCheckedAudiosData] = useState<CheckedAudio[]>([]);
+  const [sentencesData, setSentencesData] = useState<Sentence[]>([]);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchData = async () => {
-    if (!user) {
-      // Clear data when user is not authenticated
+  const fetchData = useCallback(async (token: string | null) => {
+    if (!token) {
       setUsersData([]);
       setAudiosData([]);
       setCheckedAudiosData([]);
@@ -50,37 +55,51 @@ export const DataProvider = ({ children }: DataProviderProps) => {
     setError(null);
 
     try {
-      // Simulate API call with mock data
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      setUsersData(users);
-      setAudiosData(audios);
-      setCheckedAudiosData(checked_audios);
-      setSentencesData(sentences);
+      const data = await apiService.getAllData();
+      setUsersData(data.users);
+      setAdminUsersData(data.admin_users);
+      setAudiosData(data.audios);
+      setCheckedAudiosData(data.checked_audios);
+      setSentencesData(data.sentences);
+      setCurrentUser(data.users[0]);
+      setStats({
+        sentences: data.sentences.length,
+        users: data.users.length,
+        audios: data.audios.length,
+        checked_audios: data.checked_audios.length,
+        admins: data.admin_users.length
+      });
     } catch (err) {
       setError('Failed to fetch data');
       console.error('Error fetching data:', err);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const refreshData = () => {
-    fetchData();
+    if (token) {
+      fetchData(token);
+    }
   };
 
   useEffect(() => {
-    fetchData();
-  }, [user]);
+    if (token) {
+      // fetchData(token);
+    }
+  }, [token, fetchData]);
 
   const value = {
     usersData,
+    adminUsersData,
     audiosData,
     checkedAudiosData,
     sentencesData,
     loading,
     error,
-    refreshData
+    refreshData,
+    currentUser,
+    stats
   };
 
   return (
@@ -89,3 +108,5 @@ export const DataProvider = ({ children }: DataProviderProps) => {
     </DataContext.Provider>
   );
 };
+
+export default DataContext;

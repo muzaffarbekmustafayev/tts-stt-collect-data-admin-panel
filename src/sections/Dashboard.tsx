@@ -3,32 +3,23 @@ import {
   FileText,
   Users,
   Volume2,
-  CheckCircle,
-
   BarChart3,
   TrendingUp,
-  Database
+  ShieldCheck,
+  CircleCheck
 } from 'lucide-react';
+import { useData } from '@/hooks/useData';
 
-const Dashboard = (props: { data: any }) => {
-  const { data } = props;
-  const stats = {
-    totalSentences: data.sentences.length,
-    totalUsers: data.users.length,
-    totalAudios: data.audios.length,
-    approvedAudios: data.checked_audios.filter(a => a.status === 'approved').length,
-    pendingAudios: data.checked_audios.filter(a => a.status === 'pending').length
-  };
+const Dashboard = () => {
+  const { stats } = useData();
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-gray-900">Dashboard</h2>
-
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <StatCard title="Total Sentences" value={stats.totalSentences} icon={FileText} color="#3B82F6" />
-        <StatCard title="Total Users" value={stats.totalUsers} icon={Users} color="#10B981" />
-        <StatCard title="Total Audios" value={stats.totalAudios} icon={Volume2} color="#F59E0B" />
-        <StatCard title="Approved Audios" value={stats.approvedAudios} icon={CheckCircle} color="#8B5CF6" />
-        <StatCard title="Pending Review" value={stats.pendingAudios} icon={Database} color="#EF4444" />
+        <StatCard title="Total Sentences" value={stats.sentences} icon={FileText} color="#3B82F6" />
+        <StatCard title="Total Users" value={stats.users} icon={Users} color="#10B981" />
+        <StatCard title="Admins" value={stats.admins} icon={ShieldCheck} color="#F59E0B" />
+        <StatCard title="Total Audios" value={stats.audios} icon={Volume2} color="#F59E0B" />
+        <StatCard title="Approved Audios" value={stats.checked_audios} icon={CircleCheck} color="#8B5CF6" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -38,7 +29,10 @@ const Dashboard = (props: { data: any }) => {
             Recent Activity
           </h3>
           <div className="space-y-3">
-            <div className="flex items-center justify-between py-2 border-b">
+            <div className="flex items-center justify-center py-2">
+              <span className="text-sm text-gray-600">No recent activity</span>
+            </div>
+            {/* <div className="flex items-center justify-between py-2 border-b">
               <span className="text-sm text-gray-600">New audio uploaded</span>
               <span className="text-xs text-gray-400">2 hours ago</span>
             </div>
@@ -50,7 +44,8 @@ const Dashboard = (props: { data: any }) => {
               <span className="text-sm text-gray-600">New user registered</span>
               <span className="text-xs text-gray-400">1 day ago</span>
             </div>
-          </div>
+            */}
+          </div> 
         </div>
 
         <div className="bg-white rounded-lg shadow p-6">
@@ -59,6 +54,10 @@ const Dashboard = (props: { data: any }) => {
             Quality Distribution
           </h3>
           <div className="space-y-3">
+            <div className="flex items-center justify-center py-2">
+              <span className="text-sm text-gray-600">No data</span>
+            </div>
+            {/*
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-600">High Quality</span>
               <div className="flex items-center">
@@ -86,6 +85,7 @@ const Dashboard = (props: { data: any }) => {
                 <span className="text-sm font-medium">10%</span>
               </div>
             </div>
+            */}
           </div>
         </div>
       </div>

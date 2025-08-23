@@ -1,5 +1,5 @@
 import Dashboard from '@/sections/Dashboard';
-import { useData } from '@/contexts/DataContext';
+import { useData } from '@/hooks/useData';
 import Loader from '@/components/loading/Loader';
 
 const Home = () => {

@@ -1,12 +1,13 @@
-
 import {
   Lock,
   User,
   EyeOff,
   Eye,
 } from 'lucide-react'
-import { useState } from 'react'
+import {  useState } from 'react'
 import { toast } from 'sonner'
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
 
 const LoginPage = () => {
   const [formData, setFormData] = useState({
@@ -14,29 +15,34 @@ const LoginPage = () => {
     password: ''
   });
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  // const { login } = useAuth();
-  // const { navigate } = useRouter();
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (!formData.username || !formData.password) {
+      toast.error('Please fill in all fields');
+      return;
+    }
+
+    if (formData.username.length < 3 || formData.password.length < 3) {
+      toast.error('Username and password must be at least 3 characters long');
+      return;
+    }
+
     setLoading(true);
-    setError('');
-    
-    toast.success('Login successful', {
-      description: 'Welcome back!',
-      position: 'top-right',
-    });
-    // const result = await login(formData.username, formData.password);
-    
-    // if (result.success) {
-    //   navigate('/dashboard');
-    // } else {
-    //   setError(result.error);
-    // }
-    
-    // setLoading(false);
+
+    try {
+      await login(formData.username, formData.password);
+      toast.success('Login successful');
+      navigate('/');
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Login failed');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,6 +70,7 @@ const LoginPage = () => {
             <div className="relative">
               <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
               <input
+                id="username"
                 type="text"
                 name="username"
                 value={formData.username}
@@ -82,6 +89,7 @@ const LoginPage = () => {
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
               <input
+                id="password"
                 type={showPassword ? 'text' : 'password'}
                 name="password"
                 value={formData.password}
@@ -99,12 +107,6 @@ const LoginPage = () => {
               </button>
             </div>
           </div>
-
-          {error && (
-            <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg">
-              {error}
-            </div>
-          )}
 
           <button
             type="submit"
