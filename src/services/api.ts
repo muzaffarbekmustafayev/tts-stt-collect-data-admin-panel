@@ -18,7 +18,7 @@ export interface ApiResponse<T> {
 
 class ApiService {
   private async request<T>( endpoint: string, options: RequestInit = {}, token: string | null = null ): Promise<ApiResponse<T>> {
-    const url = `${API_BASE_URL}${endpoint}/`;
+    const url = `${API_BASE_URL}${endpoint}`;
 
     const defaultHeaders = {
       'Access-Control-Allow-Origin': '*',
@@ -92,13 +92,14 @@ class ApiService {
 
   async getAllData(token: string) {
     try {
-      const [sentences, users, audios, checkedAudios, adminUsers, currentUser] = await Promise.all([
-        this.getSentences(1, 10, token),
-        this.getUsers(1, 10, token),
-        this.getAudios(1, 10, token),
-        this.getCheckedAudios(1, 10, token),
-        this.getAdminUsers(1, 10, token),
+      const [sentences, users, audios, checkedAudios, adminUsers, currentUser, stats] = await Promise.all([
+        this.getSentences(1, 20, token),
+        this.getUsers(1, 20, token),
+        this.getAudios(1, 20, token),
+        this.getCheckedAudios(1, 20, token),
+        this.getAdminUsers(1, 20, token),
         this.getMe(token),
+        this.getStats(token),
       ]);
 
       return {
@@ -108,6 +109,7 @@ class ApiService {
         checked_audios: checkedAudios.data,
         admin_users: adminUsers.data,
         current_user: currentUser.data,
+        stats: stats.data,
       };
     } catch (error) {
       console.error('Failed to fetch all data:', error);

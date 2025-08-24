@@ -12,7 +12,7 @@ export default function Users() {
   const { token } = useAuth();
   const { usersData, stats, fetchUsers, loading } = useData()
 
-  const limit = 10
+  const limit = 20
   const [searchTerm, setSearchTerm] = useState('')
   const [page, setPage] = useState(1)
   const [editingItem, setEditingItem] = useState<User | null>(null)

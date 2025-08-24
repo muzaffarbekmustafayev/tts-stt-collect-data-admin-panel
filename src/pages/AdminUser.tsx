@@ -16,7 +16,7 @@ export default function AdminUsers() {
   const canNotEdit = currentUser?.role?.toLowerCase() !== 'superadmin'
   const canNotDelete = currentUser?.role?.toLowerCase() !== 'superadmin'
 
-  const limit = 10
+  const limit = 20
   const [searchTerm, setSearchTerm] = useState('')
   const [page, setPage] = useState(1)
   const [editingItem, setEditingItem] = useState<AdminUser | null>(null)

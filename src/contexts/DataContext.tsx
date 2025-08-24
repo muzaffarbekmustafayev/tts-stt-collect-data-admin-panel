@@ -63,13 +63,7 @@ export const DataProvider = ({ children }: DataProviderProps) => {
       setCheckedAudiosData(data.checked_audios);
       setSentencesData(data.sentences);
       setCurrentUser(data.current_user as AdminUser);
-      setStats({
-        sentences: data.sentences.length,
-        users: data.users.length,
-        audios: data.audios.length,
-        checked_audios: data.checked_audios.length,
-        admins: data.admin_users.length
-      });
+      setStats(data.stats);
     } catch (err) {
       if(err instanceof Error && err.cause === "Unauthorized") {
         logout();

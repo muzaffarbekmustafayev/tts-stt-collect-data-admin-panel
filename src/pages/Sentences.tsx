@@ -12,7 +12,7 @@ export default function Sentences() {
   const { token } = useAuth();
   const { sentencesData, stats, fetchSentences, loading } = useData()
 
-  const limit = 10
+  const limit = 20
   const [searchTerm, setSearchTerm] = useState('')
   const [page, setPage] = useState(1)
   const [editingItem, setEditingItem] = useState<Sentence | null>(null)

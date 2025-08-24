@@ -13,7 +13,7 @@ export default function Layout() {
     <div className="flex h-screen bg-gray-100">
       <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
       <div className={`flex-1 overflow-auto `}>
-        <div className="w-full p-4 mb-2 bg-white shadow-md flex items-center gap-2 ">
+        <div className="w-full p-4 mb-2 bg-white shadow-md flex items-center gap-2 sticky top-0 z-10">
           <Button variant="outline" size="icon" className="hover:bg-gray-200 hover:cursor-pointer rounded-md" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
             <Menu size={25} className="cursor-pointer" />
           </Button>
