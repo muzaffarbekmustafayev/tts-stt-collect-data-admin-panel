@@ -8,17 +8,20 @@ import ProtectedRoute from './components/ProtectedRoute'
 import LoginPage from './pages/Login'
 import NotFound from './pages/NotFound'
 import { Toaster } from './components/ui/sonner'
+import { pageNames } from './services/staticNames'
 
-const Dashboard = lazy(() => import('@/pages/Home'))
-// const Users = lazy(() => import('@/pages/Users'))
+const Dashboard = lazy(() => import('@/sections/Dashboard'))
+const Users = lazy(() => import('@/pages/Users'))
+const Sentences = lazy(() => import('@/pages/Sentences'))
+const AdminUsers = lazy(() => import('@/pages/AdminUser'))
 // const Audios = lazy(() => import('@/pages/Audios'))
-// const Sentences = lazy(() => import('@/pages/Sentences'))
 
 const routes = [
-  { path: '/', component: Dashboard },
-  // { path: '/users', component: Users },
+  { path: pageNames.dashboard.prefix, component: Dashboard },
+  { path: pageNames.users.prefix, component: Users },
+  { path: pageNames.sentences.prefix, component: Sentences },
+  { path: pageNames.admins.prefix, component: AdminUsers },
   // { path: '/audios', component: Audios },
-  // { path: '/sentences', component: Sentences },
 ]
 
 function App() {

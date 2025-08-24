@@ -5,7 +5,7 @@ import type { AdminUser, Audio, CheckedAudio, Sentence, User, Stats } from '@/ty
 import { apiService } from '@/services/api';
 
 interface DataContextType {
-  currentUser: User | null;
+  currentUser: AdminUser | null;
   usersData: User[];
   adminUsersData: AdminUser[];
   audiosData: Audio[];
@@ -14,7 +14,12 @@ interface DataContextType {
   stats: Stats;
   loading: boolean;
   error: string | null;
-  refreshData: () => void;
+  fetchUsers: (page: number, limit: number, token: string | null) => Promise<void>;
+  fetchAdminUsers: (page: number, limit: number, token: string | null) => Promise<void>;
+  fetchStats: (token: string | null) => Promise<void>;
+  fetchSentences: (page: number, limit: number, token: string | null) => Promise<void>;
+  fetchAudios: (page: number, limit: number, token: string | null) => Promise<void>;
+  fetchCheckedAudios: (page: number, limit: number, token: string | null) => Promise<void>;
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
@@ -25,7 +30,7 @@ interface DataProviderProps {
 }
 
 export const DataProvider = ({ children }: DataProviderProps) => {
-  const { token } = useAuth();
+  const { token, logout } = useAuth();
   const [stats, setStats] = useState<Stats>({
     sentences: 0,
     users: 0,
@@ -34,20 +39,16 @@ export const DataProvider = ({ children }: DataProviderProps) => {
     admins: 0
   });
   const [usersData, setUsersData] = useState<User[]>([]);
+  const [currentUser, setCurrentUser] = useState<AdminUser | null>(null);
   const [adminUsersData, setAdminUsersData] = useState<AdminUser[]>([]);
   const [audiosData, setAudiosData] = useState<Audio[]>([]);
   const [checkedAudiosData, setCheckedAudiosData] = useState<CheckedAudio[]>([]);
   const [sentencesData, setSentencesData] = useState<Sentence[]>([]);
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchData = useCallback(async (token: string | null) => {
+  const fetchAllData = useCallback(async (token: string | null) => {
     if (!token) {
-      setUsersData([]);
-      setAudiosData([]);
-      setCheckedAudiosData([]);
-      setSentencesData([]);
       return;
     }
 
@@ -55,13 +56,13 @@ export const DataProvider = ({ children }: DataProviderProps) => {
     setError(null);
 
     try {
-      const data = await apiService.getAllData();
+      const data = await apiService.getAllData(token);
       setUsersData(data.users);
       setAdminUsersData(data.admin_users);
       setAudiosData(data.audios);
       setCheckedAudiosData(data.checked_audios);
       setSentencesData(data.sentences);
-      setCurrentUser(data.users[0]);
+      setCurrentUser(data.current_user as AdminUser);
       setStats({
         sentences: data.sentences.length,
         users: data.users.length,
@@ -70,24 +71,212 @@ export const DataProvider = ({ children }: DataProviderProps) => {
         admins: data.admin_users.length
       });
     } catch (err) {
+      if(err instanceof Error && err.cause === "Unauthorized") {
+        logout();
+      }
       setError('Failed to fetch data');
       console.error('Error fetching data:', err);
     } finally {
       setLoading(false);
     }
-  }, []);
 
-  const refreshData = () => {
-    if (token) {
-      fetchData(token);
+  }, [logout]);
+
+  const fetchStats = useCallback(async (token: string | null) => {
+    if (!token) {
+      return;
     }
-  };
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const data = await apiService.getStats(token);
+      if (data.success) {
+        setStats({
+          sentences: data.data.sentences,
+          users: data.data.users,
+          audios: data.data.audios,
+          checked_audios: data.data.checked_audios,
+          admins: data.data.admins
+        });
+      } else {
+        if(data.status && data.status === 401) {
+          logout();
+        }
+        setError(data.message || 'Failed to fetch data');
+      }
+    } catch (err) {
+      if(err instanceof Error && err.cause === "Unauthorized") {
+        logout();
+      }
+      setError('Failed to fetch data');
+      console.error('Error fetching data:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, [logout]);
+
+  const fetchUsers = useCallback(async (page: number = 1, limit: number = 10, token: string | null = null) => {
+    if (!token) {
+      setUsersData([]);
+      return;
+    }
+    
+    setLoading(true);
+    setError(null);
+
+    try {
+      const data = await apiService.getUsers(page, limit, token);
+      if (data.success) {
+        setUsersData(data.data);
+      } else {
+        if(data.status && data.status === 401) {
+          logout();
+        }
+        setError(data.message || 'Failed to fetch data');
+      }
+    } catch (err) {
+      if(err instanceof Error && err.cause === "Unauthorized") {
+        logout();
+      }
+      setError('Failed to fetch data');
+      console.error('Error fetching data:', err);
+    }
+
+    setLoading(false);
+    setError(null);
+  }, [logout]);
+
+  const fetchAdminUsers = useCallback(async (page: number = 1, limit: number = 10, token: string | null = null) => {
+    if (!token) {
+      setAdminUsersData([]);
+      return;
+    }
+    
+    setLoading(true);
+    setError(null);
+
+    try {
+      const data = await apiService.getAdminUsers(page, limit, token);
+      if (data.success) {
+        setAdminUsersData(data.data);
+      } else {
+        if(data.status && data.status === 401) {
+          logout();
+        }
+        setError(data.message || 'Failed to fetch data');
+      }
+    } catch (err) {
+      if(err instanceof Error && err.cause === "Unauthorized") {
+        logout();
+      }
+      setError('Failed to fetch data');
+      console.error('Error fetching data:', err);
+    }
+
+    setLoading(false);
+    setError(null);
+  }, [logout]);
+
+  const fetchSentences = useCallback(async (page: number = 1, limit: number = 10, token: string | null = null) => {
+    if (!token) {
+      setSentencesData([]);
+      return;
+    }
+    
+    setLoading(true);
+    setError(null);
+
+    try {
+      const data = await apiService.getSentences(page, limit, token);
+      if (data.success) {
+        setSentencesData(data.data);
+      } else {
+        if(data.status && data.status === 401) {
+          logout();
+        }
+        setError(data.message || 'Failed to fetch data');
+      }
+    } catch (err) {
+      if(err instanceof Error && err.cause === "Unauthorized") {
+        logout();
+      }
+      setError('Failed to fetch data');
+      console.error('Error fetching data:', err);
+    }
+
+    setLoading(false);
+    setError(null);
+  }, [logout]);
+
+  const fetchAudios = useCallback(async (page: number = 1, limit: number = 10, token: string | null = null) => {
+    if (!token) {
+      setAudiosData([]);
+      return;
+    }
+    
+    setLoading(true);
+    setError(null);
+
+    try {
+      const data = await apiService.getAudios(page, limit, token);
+      if (data.success) {
+        setAudiosData(data.data);
+      } else {
+        if(data.status && data.status === 401) {
+          logout();
+        }
+        setError(data.message || 'Failed to fetch data');
+      }
+    } catch (err) {
+      if(err instanceof Error && err.cause === "Unauthorized") {
+        logout();
+      }
+      setError('Failed to fetch data');
+      console.error('Error fetching data:', err);
+    }
+
+    setLoading(false);
+    setError(null);
+  }, [logout]);
+
+  const fetchCheckedAudios = useCallback(async (page: number = 1, limit: number = 10, token: string | null = null) => {
+    if (!token) {
+      setCheckedAudiosData([]);
+      return;
+    }
+    
+    setLoading(true);
+    setError(null);
+
+    try {
+      const data = await apiService.getCheckedAudios(page, limit, token);
+      if (data.success) {
+        setCheckedAudiosData(data.data);
+      } else {
+        if(data.status && data.status === 401) {
+          logout();
+        }
+        setError(data.message || 'Failed to fetch data');
+      }
+    } catch (err) {
+      if(err instanceof Error && err.cause === "Unauthorized") {
+        logout();
+      }
+      setError('Failed to fetch data');
+      console.error('Error fetching data:', err);
+    }
+
+    setLoading(false);
+    setError(null);
+  }, [logout]);
 
   useEffect(() => {
     if (token) {
-      // fetchData(token);
+      fetchAllData(token);
     }
-  }, [token, fetchData]);
+  }, [token, fetchAllData]);
 
   const value = {
     usersData,
@@ -97,9 +286,14 @@ export const DataProvider = ({ children }: DataProviderProps) => {
     sentencesData,
     loading,
     error,
-    refreshData,
     currentUser,
-    stats
+    stats,
+    fetchUsers,
+    fetchStats,
+    fetchAdminUsers,
+    fetchSentences,
+    fetchAudios,
+    fetchCheckedAudios,
   };
 
   return (

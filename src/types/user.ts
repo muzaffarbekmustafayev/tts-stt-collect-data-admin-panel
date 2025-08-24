@@ -45,8 +45,8 @@ export type CheckedAudio = {
 }
 
 export type Stats = {
-  sentences: number;
   users: number;
+  sentences: number;
   audios: number;
   checked_audios: number;
   admins: number;

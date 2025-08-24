@@ -1,22 +1,41 @@
-import { CheckCircle, FileText, Home, Users, Volume2, LogOut } from "lucide-react";
+import { CheckCircle, FileText, Home, Users, Volume2, LogOut, ShieldCheck, X } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { pageNames } from "@/services/staticNames";
+import { useAuth } from "@/hooks/useAuth";
+import { Button } from "@/components/ui/button";
 
-const Sidebar = ({ isOpen }: { isOpen: boolean }) => {
+const Sidebar = ({ isOpen, setIsOpen }: { isOpen: boolean, setIsOpen: (isOpen: boolean) => void }) => {
   const navigate = useNavigate();
-  const currentPage = useLocation().pathname.split('/')[1] || 'dashboard';
+  const currentPage = useLocation().pathname.split('/')[1] || pageNames.dashboard.prefix;
   const changePage = (page: string) => {
-    navigate(`/${page}`)
+    if (page === pageNames.dashboard.prefix) {
+      navigate('/')
+      return
+    }
+    navigate(`${page}`)
+  }
+  const { logout } = useAuth()
+  const logoutHandler = () => {
+    const confirm = window.confirm('Are you sure you want to logout?')
+    if (!confirm) return
+    logout()
   }
   return (
-    <div className={`bg-gray-900 text-white min-h-screen p-4 h-screen flex flex-col transition-width duration-300 ${isOpen ? 'w-64 -left-0' : 'w-0 absolute -left-64'}`}>
-      <a href="/" className="text-xl font-bold mb-8 text-center">STT-TTS Admin</a>
+    <div className={`bg-gray-900 text-white min-h-screen p-4 h-screen flex flex-col transition-width duration-300 ${isOpen ? 'md:w-64 -left-0 w-full' : 'w-0 absolute -left-64'}`}>
+      <div className="flex justify-between items-center mb-8">
+        <a href="/" className="text-xl font-bold text-center">STT-TTS Admin</a>
+        <Button variant="outline" size="icon" className="md:hidden bg-gray-800" onClick={() => setIsOpen(false)}>
+          <X size={30} className="cursor-pointer" />
+        </Button>
+      </div>
       <nav className="space-y-2">
         {[
-          { key: 'dashboard', icon: Home, label: 'Dashboard' },
-          { key: 'sentences', icon: FileText, label: 'Sentences' },
-          { key: 'users', icon: Users, label: 'Users' },
-          { key: 'audios', icon: Volume2, label: 'Audios' },
-          { key: 'checked_audios', icon: CheckCircle, label: 'Checked Audios' }
+          { key: pageNames.dashboard.prefix, icon: Home, label: pageNames.dashboard.name },
+          { key: pageNames.users.prefix, icon: Users, label: pageNames.users.name },
+          { key: pageNames.admins.prefix, icon: ShieldCheck, label: pageNames.admins.name },
+          { key: pageNames.sentences.prefix, icon: FileText, label: pageNames.sentences.name },
+          { key: pageNames.audios.prefix, icon: Volume2, label: pageNames.audios.name },
+          { key: pageNames.checked_audios.prefix, icon: CheckCircle, label: pageNames.checked_audios.name }
         ].map(item => (
           <button
             key={item.key}
@@ -30,7 +49,7 @@ const Sidebar = ({ isOpen }: { isOpen: boolean }) => {
         ))}
       </nav>
       <button
-        onClick={() => { }}
+        onClick={logoutHandler}
         className="w-full flex items-center space-x-3 p-3 rounded-lg transition-colors hover:bg-gray-800 mt-auto"
       >
         <LogOut size={20} />

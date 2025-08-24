@@ -1,7 +1,9 @@
 import { Save, X } from "lucide-react";
 
-const EditForm = (props: { item: any, fields: any, onSave: any, onCancel: any, data: any, currentPage: any, setData: any, setEditingItem: any }) => {
-  const { item, fields, onSave, onCancel, data, currentPage, setData, setEditingItem } = props;
+
+
+const EditForm = (props: { item: any, fields: any, onSave: any, onCancel: any, setEditingItem: any }) => {
+  const { item, fields, onSave, onCancel, setEditingItem } = props;
   return (
     
   <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">

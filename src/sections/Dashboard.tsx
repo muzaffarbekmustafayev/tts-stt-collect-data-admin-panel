@@ -9,9 +9,26 @@ import {
   CircleCheck
 } from 'lucide-react';
 import { useData } from '@/hooks/useData';
+import Loader from "@/components/loading/Loader";
 
 const Dashboard = () => {
-  const { stats } = useData();
+  const { stats, loading, error } = useData();
+
+  if (loading) {
+    return <Loader />;
+  }
+
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold text-red-600 mb-2">Error Loading Data</h2>
+          <p className="text-gray-600">{error}</p>
+        </div>
+      </div>
+    );
+  }
+  
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

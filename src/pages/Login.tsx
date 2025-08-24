@@ -39,7 +39,11 @@ const LoginPage = () => {
       toast.success('Login successful');
       navigate('/');
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Login failed');
+      if (error instanceof Error && error.message === '401') {
+        toast.error('Invalid username or password');
+      } else {
+        toast.error(error instanceof Error ? error.message : 'Login failed');
+      }
     } finally {
       setLoading(false);
     }
