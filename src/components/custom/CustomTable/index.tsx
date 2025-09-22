@@ -30,7 +30,7 @@ export default function CustomTable<T extends DataProps>({
     );
   }
 
-  if (data.length === 0) {
+  if (data?.length === 0) {
     return (
       <div className="bg-white rounded-lg shadow overflow-hidden">
         <div className="p-8 text-center">

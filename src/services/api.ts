@@ -92,25 +92,11 @@ class ApiService {
 
   async getAllData(token: string) {
     try {
-      const [sentences, users, audios, checkedAudios, adminUsers, currentUser, stats] = await Promise.all([
-        this.getSentences(1, 20, token),
-        this.getUsers(1, 20, token),
-        this.getAudios(1, 20, token),
-        this.getCheckedAudios(1, 20, token),
-        this.getAdminUsers(1, 20, token),
-        this.getMe(token),
-        this.getStats(token),
-      ]);
-
-      return {
-        sentences: sentences.data,
-        users: users.data,
-        audios: audios.data,
-        checked_audios: checkedAudios.data,
-        admin_users: adminUsers.data,
-        current_user: currentUser.data,
-        stats: stats.data,
-      };
+      const resData = await this.getStats(token);
+      if (!resData.success) {
+        throw new Error(resData.message || 'Failed to fetch statistics');
+      }
+      return resData.data;
     } catch (error) {
       console.error('Failed to fetch all data:', error);
       throw error;

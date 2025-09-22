@@ -21,9 +21,9 @@ export default function AdminUsers() {
   const [page, setPage] = useState(1)
   const [editingItem, setEditingItem] = useState<AdminUser | null>(null)
   const [showAddForm, setShowAddForm] = useState(false)
-
+  
   // Filter data based on search term
-  const filteredData = adminUsersData.filter(item => 
+  const filteredData = adminUsersData?.filter(item => 
     item.username.toLowerCase().includes(searchTerm.toLowerCase())
   )
 

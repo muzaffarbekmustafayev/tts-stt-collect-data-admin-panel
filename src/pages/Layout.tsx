@@ -19,7 +19,7 @@ export default function Layout() {
           </Button>
           <h1 className="text-2xl font-bold capitalize">{title}</h1>
         </div>
-        <div className="md:px-8 px-2 mt-8">
+        <div className="md:px-8 px-2 mt-8 pb-4">
           <Outlet />
         </div>
       </div>      

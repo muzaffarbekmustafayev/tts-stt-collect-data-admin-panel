@@ -15,6 +15,6 @@ export const pageNames = {
   users: {name: 'Users', prefix: '/users'},
   audios: {name: 'Audios', prefix: '/audios'},
   sentences: {name: 'Sentences', prefix: '/sentences'},
-  checked_audios: {name: 'Audios', prefix: '/checked_audios'},
+  checked_audios: {name: 'Checked Audios', prefix: '/checked_audios'},
   admins: {name: 'Admins', prefix: '/admins'}
 }

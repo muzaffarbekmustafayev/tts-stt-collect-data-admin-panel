@@ -14,14 +14,14 @@ const Dashboard = lazy(() => import('@/sections/Dashboard'))
 const Users = lazy(() => import('@/pages/Users'))
 const Sentences = lazy(() => import('@/pages/Sentences'))
 const AdminUsers = lazy(() => import('@/pages/AdminUser'))
-// const Audios = lazy(() => import('@/pages/Audios'))
+const Audios = lazy(() => import('@/pages/Audios'))
 
 const routes = [
   { path: pageNames.dashboard.prefix, component: Dashboard },
   { path: pageNames.users.prefix, component: Users },
   { path: pageNames.sentences.prefix, component: Sentences },
   { path: pageNames.admins.prefix, component: AdminUsers },
-  // { path: '/audios', component: Audios },
+  { path: pageNames.audios.prefix, component: Audios },
 ]
 
 function App() {

@@ -44,10 +44,18 @@ export type CheckedAudio = {
   checked_at: string;
 }
 
-export type Stats = {
+export type Statistics = {
   users: number;
   sentences: number;
   audios: number;
   checked_audios: number;
   admins: number;
+}
+export type Stats = {
+  statistics: Statistics;
+  users: User[];
+  admin_users: AdminUser[];
+  audios: Audio[];
+  checked_audios: CheckedAudio[];
+  sentences: Sentence[];
 }

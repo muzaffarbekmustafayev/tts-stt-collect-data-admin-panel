@@ -1,7 +1,7 @@
 import { createContext, useState, useEffect, useCallback } from 'react';
 import type { ReactNode } from 'react';
 import { useAuth } from '../hooks/useAuth';
-import type { AdminUser, Audio, CheckedAudio, Sentence, User, Stats } from '@/types/user';
+import type { AdminUser, Audio, CheckedAudio, Sentence, User, Statistics, Stats } from '@/types/user';
 import { apiService } from '@/services/api';
 
 interface DataContextType {
@@ -11,7 +11,7 @@ interface DataContextType {
   audiosData: Audio[];
   checkedAudiosData: CheckedAudio[];
   sentencesData: Sentence[];
-  stats: Stats;
+  stats: Statistics;
   loading: boolean;
   error: string | null;
   fetchUsers: (page: number, limit: number, token: string | null) => Promise<void>;
@@ -31,7 +31,7 @@ interface DataProviderProps {
 
 export const DataProvider = ({ children }: DataProviderProps) => {
   const { token, logout } = useAuth();
-  const [stats, setStats] = useState<Stats>({
+  const [stats, setStats] = useState<Statistics>({
     sentences: 0,
     users: 0,
     audios: 0,
@@ -62,8 +62,12 @@ export const DataProvider = ({ children }: DataProviderProps) => {
       setAudiosData(data.audios);
       setCheckedAudiosData(data.checked_audios);
       setSentencesData(data.sentences);
-      setCurrentUser(data.current_user as AdminUser);
-      setStats(data.stats);
+      setStats(data.statistics);
+      // data.admin_users.forEach((admin) => {
+      //   if (admin.username === 'current_admin') {
+      //     setCurrentUser(admin);
+      //   }
+      // });
     } catch (err) {
       if(err instanceof Error && err.cause === "Unauthorized") {
         logout();
@@ -88,11 +92,11 @@ export const DataProvider = ({ children }: DataProviderProps) => {
       const data = await apiService.getStats(token);
       if (data.success) {
         setStats({
-          sentences: data.data.sentences,
-          users: data.data.users,
-          audios: data.data.audios,
-          checked_audios: data.data.checked_audios,
-          admins: data.data.admins
+          sentences: data.data.sentences.length || 0,
+          users: data.data.users.length || 0,
+          audios: data.data.audios.length || 0,
+          checked_audios: data.data.checked_audios.length || 0,
+          admins: data.data.admin_users.length || 0
         });
       } else {
         if(data.status && data.status === 401) {
@@ -153,7 +157,7 @@ export const DataProvider = ({ children }: DataProviderProps) => {
 
     try {
       const data = await apiService.getAdminUsers(page, limit, token);
-      if (data.success) {
+      if (data.success) {        
         setAdminUsersData(data.data);
       } else {
         if(data.status && data.status === 401) {
