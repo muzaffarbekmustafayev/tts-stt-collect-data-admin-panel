@@ -1,4 +1,4 @@
-type Data = {
+export type Data = {
   sentences: {
     id: number;
     text: string;
