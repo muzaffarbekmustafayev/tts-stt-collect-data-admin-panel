@@ -3,6 +3,7 @@ export type AdminUser = {
   username: string;
   is_active: boolean;
   role: string;
+  password?: string;
   created_at?: string;
 }
 export type CurrentAdmin = {

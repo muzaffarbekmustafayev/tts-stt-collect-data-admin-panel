@@ -6,6 +6,12 @@ export interface ColumnsProps {
   sortable?: boolean;
   render?: (value: unknown, row: unknown) => React.ReactNode;
   type?: string;
+  required?: boolean;
+  noedit?: boolean;
+  noshow?: boolean;
+  nosort?: boolean;
+  is_reference?: boolean;
+  reference?: string;
 }
 
 export interface DataProps {
@@ -62,6 +68,8 @@ export interface TableBodyProps<T extends DataProps> {
   };
   canNotEdit?: boolean;
   canNotDelete?: boolean;
+  setShowReference: (show: boolean) => void;
+  setReference: (reference: {item: T, col: ColumnsProps}) => void;
 }
 
 // Pagination interface

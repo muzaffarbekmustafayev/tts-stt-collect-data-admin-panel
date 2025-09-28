@@ -18,7 +18,7 @@ export interface AdminUser extends DataProps {
   username: string;
   is_active: boolean;
   role: string;
-  created_at: string;
+  created_at?: string;
 }
 
 // Sentence interface

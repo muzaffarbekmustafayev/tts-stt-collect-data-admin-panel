@@ -1,17 +1,18 @@
 import { useData } from "@/hooks/useData";
 import { useState } from "react";
-import { adminUsersColumns } from "@/services/tableColumns";
+import { adminUsersColumns, adminUsersColumnsUpdate } from "@/services/tableColumns";
 import { useAuth } from "@/hooks/useAuth";
 import GenericTablePage from "@/components/custom/GenericTablePage";
 import type { AdminUser } from "@/types/pageInterfaces";
 import GenericEditForm from "@/components/custom/GenericEditForm";
 import type { FieldProps } from "@/components/custom/CustomEditForm/interfaces";
 import GenericAddForm from "@/components/custom/GenerigAddForm";
+import { toast } from "sonner";
+import { apiService } from "@/services/api";
 
 export default function AdminUsers() {
   const { token } = useAuth();
-  const { adminUsersData, stats, fetchUsers, loading, currentUser } = useData()
-  
+  const { adminUsersData, stats, fetchAdminUsers, loading, currentUser } = useData()
   const canNotAdd = currentUser?.role?.toLowerCase() !== 'superadmin'
   const canNotEdit = currentUser?.role?.toLowerCase() !== 'superadmin'
   const canNotDelete = currentUser?.role?.toLowerCase() !== 'superadmin'
@@ -27,32 +28,73 @@ export default function AdminUsers() {
     item.username.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
-  const handleAddUser = () => {
+  const handleAddAdminUser = () => {
     setShowAddForm(true);
   };
 
-  const handleEditUser = (adminUser: AdminUser) => {
+  const handleEditAdminUser = (adminUser: AdminUser) => {
     setEditingItem(adminUser);
   };
 
-  const handleSaveUser = (adminUser: AdminUser) => {
+  const handleSaveAdminUser = async (adminUser: AdminUser) => {
     console.log(adminUser);
-    setEditingItem(null);
-    // TODO: Implement refresh data logic
+    if(!adminUser || !adminUser.username) return toast.error('Admin is not valid');
+    try {
+      if(adminUser.username.trim() === '' || adminUser.username.length <3 || adminUser.role === '-') {
+        toast.error('Some fields are not valid');
+        return;
+      }
+      if (!token) return;
+      if (!editingItem) {
+        const response = await apiService.addAdminUser(adminUser, token);
+        if (response.success) {
+          toast.success('Admin user added successfully');
+        } else {
+          toast.error('Failed to add admin user');
+        }
+        setShowAddForm(false);
+      } else {
+        const response = await apiService.updateAdminUser(adminUser, token);
+        if (response.success) {
+          toast.success('Admin user updated successfully');
+        } else {
+          toast.error('Failed to update admin user');
+        }
+        setEditingItem(null);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error('Failed to save admin : ' + (error as Error).message);
+    }
+    fetchAdminUsers(page, limit, token);
   };
 
-  const handleDeleteUser = (id: string | number) => {
-    // Implement delete logic here
-    console.log('Delete user with id:', id);
+  const handleDeleteAdminUser = async (id: string | number) => {
+    const confirm = window.confirm('Are you sure you want to delete this Admin?');
+    if (!confirm) return;
+    if (token) {
+      try {
+        const response = await apiService.deleteAdminUser(id, token);
+        if (response.success) {
+          toast.success('Admin user deleted successfully');
+          fetchAdminUsers(page, limit, token);
+        } else {
+          toast.error('Failed to delete admin user');
+        }
+      } catch (error) {
+        console.log(error);
+        toast.error('Failed to delete admin user:' + (error as Error).message);
+      }
+    }
   };
 
-  const handleSearchUsers = (term: string) => {
+  const handleSearchAdminUsers = (term: string) => {
     setSearchTerm(term);
   };
 
   const handleRefreshData = () => {
     if (token) {
-      fetchUsers(page, limit, token);
+      fetchAdminUsers(page, limit, token);
     }
   };
 
@@ -65,7 +107,7 @@ export default function AdminUsers() {
         loading={loading}
         searchProps={{
           searchTerm,
-          setSearchTerm: handleSearchUsers,
+          setSearchTerm: handleSearchAdminUsers,
           placeholder: "Search by username..."
         }}
         paginationProps={{
@@ -76,9 +118,9 @@ export default function AdminUsers() {
           onPrevious: () => page > 1 && setPage(page - 1)
         }}
         onRefresh={handleRefreshData}
-        onAdd={handleAddUser}
-        onEdit={handleEditUser}
-        onDelete={handleDeleteUser}
+        onAdd={handleAddAdminUser}
+        onEdit={handleEditAdminUser}
+        onDelete={handleDeleteAdminUser}
         addButtonText="Add New Admin User"
         emptyMessage="No admin users found"
         showActions={true}
@@ -96,8 +138,8 @@ export default function AdminUsers() {
         <GenericEditForm<AdminUser>
           title="Edit Admin User"
           item={editingItem}
-          fields={adminUsersColumns as FieldProps[]}
-          onSave={handleSaveUser}
+          fields={adminUsersColumnsUpdate as FieldProps[]}
+          onSave={handleSaveAdminUser}
           onCancel={() => setEditingItem(null)}
         />
       )}
@@ -106,7 +148,7 @@ export default function AdminUsers() {
         <GenericAddForm<AdminUser>
           title="Add Admin User"
           fields={adminUsersColumns as FieldProps[]}
-          onSave={handleSaveUser}
+          onSave={handleSaveAdminUser}
           onCancel={() => setShowAddForm(false)}
         />
       )}

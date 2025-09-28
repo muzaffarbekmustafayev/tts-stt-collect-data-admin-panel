@@ -5,6 +5,12 @@ export interface FieldProps {
   type: 'text' | 'number' | 'select' | 'textarea';
   options?: { label: string; value: string }[];
   render?: (value: unknown, row: unknown) => React.ReactNode;
+  required?: boolean;
+  noedit?: boolean;
+  defaultValue?: string;
+  name?: string;
+  is_reference?: boolean;
+  reference?: string;
 }
 
 export interface DataProps {

@@ -1,10 +1,12 @@
 import TableHeader from "./TableHeader";
 import TableBody from "./TableBody";
-import type { GenericTableProps, DataProps } from "./interfaces";
+import type { GenericTableProps, DataProps, ColumnsProps } from "./interfaces";
+import ReferenceShow from "../CustomReferenceData/ReferenceShow";
+import { useState } from "react";
 
-export default function CustomTable<T extends DataProps>({ 
-  columns, 
-  data, 
+export default function CustomTable<T extends DataProps>({
+  columns,
+  data,
   onDelete,
   onEdit,
   onView,
@@ -19,6 +21,9 @@ export default function CustomTable<T extends DataProps>({
   canNotEdit = false,
   canNotDelete = false
 }: GenericTableProps<T>) {
+  const [showReference, setShowReference] = useState<boolean>(false);
+  const [reference, setReference] = useState<{item: T, col: ColumnsProps} | null>(null);
+
   if (loading) {
     return (
       <div className="bg-white rounded-lg shadow overflow-hidden">
@@ -41,28 +46,37 @@ export default function CustomTable<T extends DataProps>({
   }
 
   return (
-    <div className="bg-white rounded-lg shadow overflow-hidden">
-      <div className="overflow-x-auto">
-        <table className="w-full">
-          <TableHeader 
-            columns={columns} 
-            showActions={showActions}
-            canNotEdit={canNotEdit}
-            canNotDelete={canNotDelete}
-          />
-          <TableBody 
-            data={data} 
-            columns={columns} 
-            onDelete={onDelete}
-            onEdit={onEdit}
-            onView={onView}
-            showActions={showActions}
-            actions={actions}
-            canNotEdit={canNotEdit}
-            canNotDelete={canNotDelete}
-          />
-        </table>
+    <>
+      <div className="bg-white rounded-lg shadow overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <TableHeader
+              columns={columns}
+              showActions={showActions}
+              canNotEdit={canNotEdit}
+              canNotDelete={canNotDelete}
+            />
+            <TableBody
+              data={data}
+              columns={columns}
+              onDelete={onDelete}
+              onEdit={onEdit}
+              onView={onView}
+              showActions={showActions}
+              actions={actions}
+              canNotEdit={canNotEdit}
+              canNotDelete={canNotDelete}
+              setShowReference={setShowReference}
+              setReference={setReference}
+            />
+          </table>
+        </div>
       </div>
-    </div>
+      {
+        columns.some(col => col.is_reference) && showReference && (
+          <ReferenceShow setShowReference={setShowReference} reference={reference} setReference={setReference} showReference={showReference} />
+        )
+      }
+    </>
   );
 }

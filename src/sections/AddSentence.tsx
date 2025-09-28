@@ -15,7 +15,7 @@ export const AddSentenceFromFile = ({setShowUploadFile}: AddSentenceFromFileProp
   return (
     <>
       <div className="fixed inset-0 bg-gray-900/50 flex items-center justify-center z-50 backdrop-blur-xs transition-all duration-300">
-        <div className="bg-white rounded-lg p-6 w-1/4 max-w-screen-lg">
+        <div className="bg-white rounded-lg p-6 max-w-max w-full">
           <div className="flex justify-between">
             <h3 className="text-lg font-medium mb-4">Add Sentence From File</h3>
             <Button onClick={() => setShowUploadFile(false)}><X size={16} /></Button>

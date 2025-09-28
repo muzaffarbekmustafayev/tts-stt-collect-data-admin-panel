@@ -42,6 +42,7 @@ class ApiService {
         if(response.status === 401) {
           throw new Error("401", { cause: "Unauthorized" });
         }
+        console.log(error);
         throw new Error(
           error.detail ||
             error.message ||
@@ -132,8 +133,9 @@ class ApiService {
     });
   }
 
+
+  //============ users methods ============
   async addUser(user: User, token: string,) {
-    console.log(user);
     return this.request<User>(`/users`, {
       method: 'POST',
       body: JSON.stringify(
@@ -156,7 +158,129 @@ class ApiService {
   async deleteUser(id: string | number, token: string) {
     return this.request<User>(`/admin/users/${id}`, {
       method: 'DELETE',
-      
+    }, token);
+  }
+
+
+  //============ sentences methods ============
+  async addSentence(sentence: Sentence, token: string) {
+    return this.request<Sentence>(`/sentences`, {
+      method: 'POST',
+      body: JSON.stringify(sentence),
+      headers: {'accept': 'application/json',},
+    }, token, 'application/json');
+  }
+  
+  async updateSentence(sentence: Sentence, token: string) {
+    return this.request<Sentence>(`/sentences/${sentence.id}`, {
+      method: 'PUT',
+      body: JSON.stringify({text: sentence.text, language: sentence?.language}),
+      headers: {'accept': 'application/json',},
+    }, token, 'application/json');
+  }
+  
+  async deleteSentence(id: string | number, token: string) {
+    return this.request<Sentence>(`/sentences/${id}`, {
+      method: 'DELETE',
+    }, token, 'application/json');
+  }
+
+  //============ AdminUser methods ============
+  async addAdminUser(adminUser: AdminUser, token: string) {
+    return this.request<AdminUser>(`/admin`, {
+      method: 'POST',
+      body: JSON.stringify(adminUser),
+      headers: {'accept': 'application/json',},
+    }, token, 'application/json');
+  }
+  
+  async updateAdminUser(adminUser: AdminUser, token: string) {
+    return this.request<AdminUser>(`/admin/${adminUser.id}`, {
+      method: 'PUT',
+      body: JSON.stringify({username: adminUser.username, is_active: adminUser.is_active, role: adminUser.role, password: adminUser.password}),
+      headers: {'accept': 'application/json',},
+    }, token, 'application/json');
+  }
+  
+  async deleteAdminUser(id: string | number, token: string) {
+    return this.request<AdminUser>(`/admin/${id}`, {
+      method: 'DELETE',
+    }, token, 'application/json');
+  }
+
+  //============ audios methods ============
+  // async addAudio(audio: Audio, token: string,) {
+  //   return this.request<Audio>(`/audios`, {
+  //     method: 'POST',
+  //     body: JSON.stringify(
+  //       {user_id: audio.user_id || '', sentence_id: audio.sentence_id || '', audio_path: audio.audio_path || ''}
+  //     ),
+  //     headers: {'accept': 'application/json',},
+  //   }, token, 'application/json');
+  // }
+  
+  // async updateAudio(audio: Audio, token: string) {
+  //   return this.request<Audio>(`/admin/audios/${audio.id}`, {
+  //     method: 'PUT',
+  //     body: JSON.stringify(
+  //       {user_id: audio.user_id || '', sentence_id: audio.sentence_id || '', audio_path: audio.audio_path || ''}
+  //     ),
+  //     headers: {'accept': 'application/json'}
+  //   }, token, 'application/json');
+  // }
+
+  async deleteAudio(id: string | number, token: string) {
+    return this.request<Audio>(`/received-audio/${id}`, {
+      method: 'DELETE',
+    }, token);
+  }
+  
+
+  //============ checked audios methods ============
+  // async addCheckedAudio(checkedAudio: CheckedAudio, token: string,) {
+  //   return this.request<CheckedAudio>(`/checked-audios`, {
+  //     method: 'POST',
+  //     body: JSON.stringify(
+  //       {audio_id: checkedAudio?.audio_id || '', checked_by: checkedAudio.checked_by || '', comment: checkedAudio.comment || '', is_correct: checkedAudio.is_correct || ''}
+  //     ),
+  //     headers: {'accept': 'application/json',},
+  //   }, token, 'application/json');
+  // }
+  
+  // async updateCheckedAudio(checkedAudio: CheckedAudio, token: string) {
+  //   return this.request<CheckedAudio>(`/admin/checked-audios/${checkedAudio.id}`, {
+  //     method: 'PUT',
+  //     body: JSON.stringify(
+  //       {audio_id: checkedAudio?.audio_id || '', checked_by: checkedAudio.checked_by || '', comment: checkedAudio.comment || '', is_correct: checkedAudio.is_correct || ''}
+  //     ),
+  //     headers: {'accept': 'application/json'}
+  //   }, token, 'application/json');
+  // }
+
+  async deleteCheckedAudio(id: string | number, token: string) {
+    return this.request<CheckedAudio>(`/checked-audio/${id}`, {
+      method: 'DELETE',
+    }, token);
+  }
+
+
+
+  //============ reference User methods ============
+  async getReferenceUser(id: string | number, token: string) {
+    return this.request<User>(`/users/by-id/${id}`, {
+      method: 'GET',
+    }, token);
+  }
+
+  async getReferenceSentence(id: string | number, token: string) {
+    return this.request<Sentence>(`/sentences/by-id/${id}`, {
+      method: 'GET',
+    }, token);
+  }
+
+  async getReferenceAudio(id: string | number, token: string) {
+    return this.request<Audio>(`/received-audio/by-id/${id}`, {
+      method: 'GET',
     }, token);
   }
 

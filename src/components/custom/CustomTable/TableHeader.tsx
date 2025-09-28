@@ -19,7 +19,9 @@ export default function TableHeader({
   return (
     <thead className="bg-gray-50">
       <tr>
-        {columns.map(col => (
+        {columns.map(col => {
+          if(col.noshow) return null;
+          return (
           <th 
             key={col.key} 
             className={`px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider ${col?.width || ''} ${
@@ -40,7 +42,7 @@ export default function TableHeader({
               )}
             </div>
           </th>
-        ))}
+        )})}
         {showActions && !canNotEdit && !canNotDelete && (
           <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
             Actions

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Edit, Trash2, Eye } from 'lucide-react';
-import type { TableBodyProps, DataProps } from './interfaces';
+import type { TableBodyProps, DataProps, ColumnsProps } from './interfaces';
  
 const backendUrl = import.meta.env.VITE_API_URL;
 
@@ -17,27 +17,37 @@ export default function TableBody<T extends DataProps>({
     view: false
   },
   canNotEdit = false,
-  canNotDelete = false
+  canNotDelete = false,
+  setShowReference,
+  setReference
 }: TableBodyProps<T>) {
+  const handleShowReference = (item: T, col: ColumnsProps) => {
+    setShowReference(true);
+    setReference({item, col});
+  }
   return (
     <tbody className="bg-white divide-y divide-gray-200">
       {data.map(item => (
         <tr key={item.id} className="hover:bg-gray-50">
-          {columns.map(col => (
+          {columns.map(col => {
+            if(col.noshow) return null;
+            return (
             <td key={col.key} className={`px-6 py-4 whitespace-wrap break-words text-sm text-gray-900 ${col?.width || ''}`}>
               {col.render
-                ? col.render(item[col.key as keyof T], item)
+                ? col.render(item[col.key as keyof T], item):
+                col.is_reference ? <a className="text-blue-600 hover:text-blue-900 cursor-pointer" onClick={() => handleShowReference(item, col)}>{(item[col.key as keyof T] as React.ReactNode)}</a>
                 : (
                   typeof item[col.key as keyof T] === 'string' ||
                   typeof item[col.key as keyof T] === 'number' ||
                   React.isValidElement(item[col.key as keyof T])
                     ? col.type == 'audio_url' && backendUrl ? <audio src={ backendUrl + '/' + item[col.key as keyof T] as string} controls /> : (item[col.key as keyof T] as React.ReactNode)
                     : col.type == 'checkbox' ? item[col.key as keyof T] as boolean ? 'Yes' : 'No' : 
+                    typeof item[col.key as keyof T] === 'boolean' ? item[col.key as keyof T] as boolean ? 'Yes' : 'No' : 
                     '-'
                 )
               }
             </td>
-          ))}
+          )})}
           {showActions && !canNotEdit && !canNotDelete && (
             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
               <div className="flex space-x-2">

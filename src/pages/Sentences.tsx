@@ -9,6 +9,8 @@ import type { FieldProps } from "@/components/custom/CustomEditForm/interfaces";
 import GenericAddForm from "@/components/custom/GenerigAddForm";
 import { Button } from "@/components/ui/button";
 import { AddSentenceFromFile } from "@/sections/AddSentence";
+import { toast } from "sonner";
+import { apiService } from "@/services/api";
 
 export default function Sentences() {
   const { token } = useAuth();
@@ -33,15 +35,54 @@ export default function Sentences() {
     setEditingItem(sentence);
   };
 
-  const handleSaveSentence = (sentence: Sentence) => {
-    console.log(sentence);
-    setEditingItem(null);
-    // TODO: Implement refresh data logic
+  const handleSaveSentence = async (sentence: Sentence) => {
+    if( !sentence || sentence.text.length <3 ) {
+      toast.error('Some fields are not valid');
+      return;
+    }
+    if (!token) return;
+    try {
+      if (!editingItem) {
+        const response = await apiService.addSentence(sentence, token);
+        if (response.success) {
+          toast.success('Sentence added successfully');
+        } else {
+          toast.error('Failed to add sentence');
+        }
+        setShowAddForm(false);
+      } else {
+        const response = await apiService.updateSentence(sentence, token);
+        if (response.success) {
+          toast.success('Sentence updated successfully');
+        } else {
+          toast.error('Failed to update sentence');
+        }
+        setEditingItem(null);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error('Failed to save sentence: ' + (error as Error).message);
+    }
+    fetchSentences(page, limit, token);
   };
 
-  const handleDeleteSentence = (id: string | number) => {
-    // Implement delete logic here
-    console.log('Delete sentence with id:', id);
+  const handleDeleteSentence = async (id: string | number) => {
+    const confirm = window.confirm('Are you sure you want to delete this sentence?');
+    if (!confirm) return;
+    if (token) {
+      try {
+        const response = await apiService.deleteSentence(id, token);
+        if (response.success) {
+          toast.success('Sentence deleted successfully');
+          fetchSentences(page, limit, token);
+        } else {
+          toast.error('Failed to delete sentence');
+        }
+      } catch (error) {
+        console.log(error);
+        toast.error('Failed to delete sentence:' + (error as Error).message);
+      }
+    }
   };
 
   const handleSearchSentences = (term: string) => {

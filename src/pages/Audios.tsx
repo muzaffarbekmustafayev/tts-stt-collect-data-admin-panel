@@ -7,6 +7,8 @@ import type { Audio } from "@/types/user";
 import GenericEditForm from "@/components/custom/GenericEditForm";
 import type { FieldProps } from "@/components/custom/CustomEditForm/interfaces";
 import GenericAddForm from "@/components/custom/GenerigAddForm";
+import { apiService } from "@/services/api";
+import { toast } from "sonner";
 
 export default function Audios() {
   const { token } = useAuth();
@@ -37,9 +39,23 @@ export default function Audios() {
     // TODO: Implement refresh data logic
   };
 
-  const handleDeleteAudio = (id: string | number) => {
-    // Implement delete logic here
-    console.log('Delete audio with id:', id);
+  const handleDeleteAudio = async (id: string | number) => {
+    const confirm = window.confirm('Are you sure you want to delete this Audio?');
+    if (!confirm) return;
+    if (token) {
+      try {
+        const response = await apiService.deleteAudio(id, token);
+        if (response.success) {
+          toast.success('Audio deleted successfully');
+          fetchAudios(page, limit, token);
+        } else {
+          toast.error('Failed to delete audio');
+        }
+      } catch (error) {
+        console.log(error);
+        toast.error('Failed to delete audio:' + (error as Error).message);
+      }
+    }
   };
 
   const handleSearchAudios = (term: string) => {

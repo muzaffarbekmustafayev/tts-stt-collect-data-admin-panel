@@ -7,6 +7,8 @@ import type { CheckedAudio } from "@/types/user";
 import GenericEditForm from "@/components/custom/GenericEditForm";
 import type { FieldProps } from "@/components/custom/CustomEditForm/interfaces";
 import GenericAddForm from "@/components/custom/GenerigAddForm";
+import { toast } from "sonner";
+import { apiService } from "@/services/api";
 
 export default function CheckedAudios() {
   const { token } = useAuth();
@@ -37,9 +39,23 @@ export default function CheckedAudios() {
     // TODO: Implement refresh data logic
   };
 
-  const handleDeleteCheckedAudio = (id: string | number) => {
-    // Implement delete logic here
-    console.log('Delete audio with id:', id);
+  const handleDeleteCheckedAudio = async (id: string | number) => {
+    const confirm = window.confirm('Are you sure you want to delete this Checked Audio?');
+    if (!confirm) return;
+    if (token) {
+      try {
+        const response = await apiService.deleteCheckedAudio(id, token);
+        if (response.success) {
+          toast.success('Checked Audio deleted successfully');
+          fetchCheckedAudios(page, limit, token);
+        } else {
+          toast.error('Failed to delete checked audio');
+        }
+      } catch (error) {
+        console.log(error);
+        toast.error('Failed to delete checked audio:' + (error as Error).message);
+      }
+    }
   };
 
   const handleSearchCheckedAudios = (term: string) => {

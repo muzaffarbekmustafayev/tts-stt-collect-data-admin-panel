@@ -34,12 +34,13 @@ export default function Users() {
   };
 
   const handleSaveUser = async (user: User) => {
-    if(user.name.length <3 || user.age < 1 || user.age > 100 || !user.gender || user.gender === '-') {
-      toast.error('Some fields are not valid');
-      return;
-    }
-    if (!token) return;
+    if(!user || !user.name || !user.age || !user.gender) return toast.error('User is not valid');
     try {
+      if(user.name.trim() === '' || user.name.length <3 || user.age < 1 || user.age > 100 || user.gender === '-') {
+        toast.error('Some fields are not valid');
+        return;
+      }
+      if (!token) return;
       if (!editingItem) {
         const response = await apiService.addUser(user, token);
         if (response.success) {
@@ -47,6 +48,7 @@ export default function Users() {
         } else {
           toast.error('Failed to add user');
         }
+        setShowAddForm(false);
       } else {
         const response = await apiService.updateUser(user, token);
         if (response.success) {
@@ -54,14 +56,12 @@ export default function Users() {
         } else {
           toast.error('Failed to update user');
         }
+        setEditingItem(null);
       }
-      
     } catch (error) {
       console.log(error);
-      
-      toast.error('Failed to save user');
+      toast.error('Failed to save user: ' + (error as Error).message);
     }
-    setEditingItem(null);
     fetchUsers(page, limit, token);
   };
 
@@ -79,7 +79,7 @@ export default function Users() {
         }
       } catch (error) {
         console.log(error);
-        toast.error('Failed to delete user');
+        toast.error('Failed to delete user:' + (error as Error).message);
       }
     }
   };
