@@ -14,7 +14,7 @@ export const adminUsersColumns = [
   { key: 'username', label: 'Username', type: 'text', required: true, name: 'username'},
   { key: 'is_active', label: 'Is Active', type: 'select', options: [{ label: 'Active', value: 'true' }, { label: 'Inactive', value: 'false' }] },
   { key: 'password', label: 'Password', type: 'password', required: true, name: 'password', noshow: true},
-  { key: 'role', label: 'Role', type: 'select', options: [{ label: 'Admin', value: 'Admin' }, { label: 'Super Admin', value: 'superdmin' }] },
+  { key: 'role', label: 'Role', type: 'select', options: [{ label: 'Admin', value: 'admin' }, { label: 'Super Admin', value: 'superadmin' }] },
   { key: 'created_at', label: 'Created At', type: 'date' },
 ]
 
@@ -23,7 +23,7 @@ export const adminUsersColumnsUpdate = [
   { key: 'username', label: 'Username', type: 'text', required: true, name: 'username'},
   { key: 'is_active', label: 'Is Active', type: 'select', options: [{ label: 'Active', value: 'true' }, { label: 'Inactive', value: 'false' }] },
   { key: 'password', label: 'New Password (Optional)', type: 'password', name: 'new_password', noshow: true},
-  { key: 'role', label: 'Role', type: 'select', options: [{ label: 'Admin', value: 'Admin' }, { label: 'Super Admin', value: 'superdmin' }] },
+  { key: 'role', label: 'Role', type: 'select', options: [{ label: 'Admin', value: 'admin' }, { label: 'Super Admin', value: 'superadmin' }] },
   { key: 'created_at', label: 'Created At', type: 'date' },
 ]
 
