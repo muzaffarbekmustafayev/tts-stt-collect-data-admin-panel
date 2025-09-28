@@ -3,12 +3,12 @@ import type { DataProps } from "@/components/custom/CustomTable/interfaces";
 // User interface - using existing User type from user.ts
 export interface User extends DataProps {
   id: number;
-  telegram_id: string;
+  telegram_id?: string;
   name: string;
   gender: string;
   age: number;
   // phone: string;
-  info: string;
+  info?: string;
   created_at: string;
 }
 

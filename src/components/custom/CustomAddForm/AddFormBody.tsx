@@ -18,10 +18,12 @@ export default function AddFormBody({
                   </label>
                   {field.type === 'select' ? (
                     <select
-                      value={item[field.key] as string}
+                      value={item[field.key] as string || ''}
+                      defaultValue={'-'}
                       onChange={(e) => handleChange(field.key, e.target.value)}
                       className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     >
+                      <option selected>{'-'}</option>
                       {field.options?.map((option: { label: string; value: string }) => (
                         <option key={option.value} value={option.value}>{option.label}</option>
                       ))}
@@ -36,7 +38,7 @@ export default function AddFormBody({
                   ) : (
                     <input
                       type={field.type || 'text'}
-                      value={item[field.key] as string}
+                      value={item[field.key] as string || ''}
                       onChange={(e) => handleChange(field.key, e.target.value)}
                       className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     />

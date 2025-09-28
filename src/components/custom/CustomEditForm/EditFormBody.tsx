@@ -18,7 +18,7 @@ export default function EditFormBody<T extends DataProps>({
                   </label>
                   {field.type === 'select' ? (
                     <select
-                      value={item[field.key] as string}
+                      value={item[field.key] as string || ''}
                       onChange={(e) => handleChange(field.key, e.target.value)}
                       className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     >

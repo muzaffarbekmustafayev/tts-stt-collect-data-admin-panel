@@ -7,10 +7,12 @@ import type { User } from "@/types/pageInterfaces";
 import GenericEditForm from "@/components/custom/GenericEditForm";
 import type { FieldProps } from "@/components/custom/CustomEditForm/interfaces";
 import GenericAddForm from "@/components/custom/GenerigAddForm";
+import { apiService } from "@/services/api";
+import { toast } from "sonner";
 
 export default function Users() {
   const { token } = useAuth();
-  const { usersData, stats, fetchUsers, loading } = useData()
+  const { usersData, stats, fetchUsers, loading} = useData()
 
   const limit = 20
   const [searchTerm, setSearchTerm] = useState('')
@@ -31,15 +33,55 @@ export default function Users() {
     setEditingItem(user);
   };
 
-  const handleSaveUser = (user: User) => {
-    console.log(user);
+  const handleSaveUser = async (user: User) => {
+    if(user.name.length <3 || user.age < 1 || user.age > 100 || !user.gender || user.gender === '-') {
+      toast.error('Some fields are not valid');
+      return;
+    }
+    if (!token) return;
+    try {
+      if (!editingItem) {
+        const response = await apiService.addUser(user, token);
+        if (response.success) {
+          toast.success('User added successfully');
+        } else {
+          toast.error('Failed to add user');
+        }
+      } else {
+        const response = await apiService.updateUser(user, token);
+        if (response.success) {
+          toast.success('User updated successfully');
+        } else {
+          toast.error('Failed to update user');
+        }
+      }
+      
+    } catch (error) {
+      console.log(error);
+      
+      toast.error('Failed to save user');
+    }
     setEditingItem(null);
-    // TODO: Implement refresh data logic
+    fetchUsers(page, limit, token);
   };
 
-  const handleDeleteUser = (id: string | number) => {
-    // Implement delete logic here
-    console.log('Delete user with id:', id);
+  const handleDeleteUser = async (id: string | number) => {
+    const confirm = window.confirm('Are you sure you want to delete this user?');
+    if (!confirm) return;
+    if (token) {
+      try {
+        const response = await apiService.deleteUser(id, token);
+        if (response.success) {
+          toast.success('User deleted successfully');
+          fetchUsers(page, limit, token);
+        } else {
+          toast.error('Failed to delete user');
+        }
+      } catch (error) {
+        console.log(error);
+        toast.error('Failed to delete user');
+      }
+    }
   };
 
   const handleSearchUsers = (term: string) => {

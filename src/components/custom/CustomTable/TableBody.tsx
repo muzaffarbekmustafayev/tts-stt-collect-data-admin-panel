@@ -1,6 +1,8 @@
 import React from 'react';
 import { Edit, Trash2, Eye } from 'lucide-react';
 import type { TableBodyProps, DataProps } from './interfaces';
+ 
+const backendUrl = import.meta.env.VITE_API_URL;
 
 export default function TableBody<T extends DataProps>({ 
   data, 
@@ -28,10 +30,10 @@ export default function TableBody<T extends DataProps>({
                 : (
                   typeof item[col.key as keyof T] === 'string' ||
                   typeof item[col.key as keyof T] === 'number' ||
-                  typeof item[col.key as keyof T] === 'boolean' ||
                   React.isValidElement(item[col.key as keyof T])
-                    ? (item[col.key as keyof T] as React.ReactNode)
-                    : '-'
+                    ? col.type == 'audio_url' && backendUrl ? <audio src={ backendUrl + '/' + item[col.key as keyof T] as string} controls /> : (item[col.key as keyof T] as React.ReactNode)
+                    : col.type == 'checkbox' ? item[col.key as keyof T] as boolean ? 'Yes' : 'No' : 
+                    '-'
                 )
               }
             </td>

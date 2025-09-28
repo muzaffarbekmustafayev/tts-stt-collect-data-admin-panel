@@ -17,12 +17,13 @@ export interface ApiResponse<T> {
 }
 
 class ApiService {
-  private async request<T>( endpoint: string, options: RequestInit = {}, token: string | null = null ): Promise<ApiResponse<T>> {
+  private async request<T>( endpoint: string, options: RequestInit = {}, token: string | null = null, contentType: string = 'application/x-www-form-urlencoded' ): Promise<ApiResponse<T>> {
     const url = `${API_BASE_URL}${endpoint}`;
 
+    // 'Content-Type': 'application/x-www-form-urlencoded',
     const defaultHeaders = {
       'Access-Control-Allow-Origin': '*',
-      'Content-Type': 'application/x-www-form-urlencoded',
+      'Content-Type': contentType,
       Authorization: `Bearer ${token}`,
     };
 
@@ -130,6 +131,35 @@ class ApiService {
       body: new URLSearchParams({ grant_type: 'password', username, password }),
     });
   }
+
+  async addUser(user: User, token: string,) {
+    console.log(user);
+    return this.request<User>(`/users`, {
+      method: 'POST',
+      body: JSON.stringify(
+        {telegram_id: user.telegram_id || '', name: user.name.trim(), age: user.age, gender: user.gender, info: user.info || ''}
+      ),
+      headers: {'accept': 'application/json',},
+    }, token, 'application/json');
+  }
+  
+  async updateUser(user: User, token: string) {
+    return this.request<User>(`/admin/users/${user.id}`, {
+      method: 'PUT',
+      body: JSON.stringify(
+        {telegram_id: user.telegram_id || '', name: user.name.trim(), age: user.age, gender: user.gender, info: user.info || ''}
+      ),
+      headers: {'accept': 'application/json'}
+    }, token, 'application/json');
+  }
+
+  async deleteUser(id: string | number, token: string) {
+    return this.request<User>(`/admin/users/${id}`, {
+      method: 'DELETE',
+      
+    }, token);
+  }
+
 }
 
 export const apiService = new ApiService();

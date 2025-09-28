@@ -1,7 +1,7 @@
 import { createContext, useState, useEffect, useCallback } from 'react';
 import type { ReactNode } from 'react';
 import { useAuth } from '../hooks/useAuth';
-import type { AdminUser, Audio, CheckedAudio, Sentence, User, Statistics, Stats } from '@/types/user';
+import type { AdminUser, Audio, CheckedAudio, Sentence, User, Statistics } from '@/types/user';
 import { apiService } from '@/services/api';
 
 interface DataContextType {
@@ -63,11 +63,11 @@ export const DataProvider = ({ children }: DataProviderProps) => {
       setCheckedAudiosData(data.checked_audios);
       setSentencesData(data.sentences);
       setStats(data.statistics);
-      // data.admin_users.forEach((admin) => {
-      //   if (admin.username === 'current_admin') {
-      //     setCurrentUser(admin);
-      //   }
-      // });
+      data.admin_users.forEach((admin) => {
+        if (admin.username === data.current_admin.username) {
+          setCurrentUser(admin);
+        }
+      });
     } catch (err) {
       if(err instanceof Error && err.cause === "Unauthorized") {
         logout();
@@ -98,6 +98,11 @@ export const DataProvider = ({ children }: DataProviderProps) => {
           checked_audios: data.data.checked_audios.length || 0,
           admins: data.data.admin_users.length || 0
         });
+        setUsersData(data.data.users);
+        setAdminUsersData(data.data.admin_users);
+        setAudiosData(data.data.audios);
+        setCheckedAudiosData(data.data.checked_audios);
+        setSentencesData(data.data.sentences);
       } else {
         if(data.status && data.status === 401) {
           logout();

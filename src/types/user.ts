@@ -3,17 +3,20 @@ export type AdminUser = {
   username: string;
   is_active: boolean;
   role: string;
-  created_at: string;
+  created_at?: string;
+}
+export type CurrentAdmin = {
+  username: string;
+  role: string;
 }
 
 export type User = {
   id: number;
-  telegram_id: string;
+  telegram_id?: string;
   name: string;
   gender: string;
   age: number;
-  phone: string;
-  info: string;
+  info?: string;
   created_at: string;
 }
 
@@ -58,4 +61,5 @@ export type Stats = {
   audios: Audio[];
   checked_audios: CheckedAudio[];
   sentences: Sentence[];
+  current_admin: CurrentAdmin;
 }

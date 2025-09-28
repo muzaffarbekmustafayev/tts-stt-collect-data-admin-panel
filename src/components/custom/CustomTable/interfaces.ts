@@ -5,6 +5,7 @@ export interface ColumnsProps {
   width?: string;
   sortable?: boolean;
   render?: (value: unknown, row: unknown) => React.ReactNode;
+  type?: string;
 }
 
 export interface DataProps {

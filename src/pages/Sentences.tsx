@@ -7,6 +7,8 @@ import type { Sentence } from "@/types/pageInterfaces";
 import GenericEditForm from "@/components/custom/GenericEditForm";
 import type { FieldProps } from "@/components/custom/CustomEditForm/interfaces";
 import GenericAddForm from "@/components/custom/GenerigAddForm";
+import { Button } from "@/components/ui/button";
+import { AddSentenceFromFile } from "@/sections/AddSentence";
 
 export default function Sentences() {
   const { token } = useAuth();
@@ -17,7 +19,7 @@ export default function Sentences() {
   const [page, setPage] = useState(1)
   const [editingItem, setEditingItem] = useState<Sentence | null>(null)
   const [showAddForm, setShowAddForm] = useState(false)
-
+  const [showUploadFile, setShowUploadFile] = useState(false)
   // Filter data based on search term
   const filteredData = sentencesData.filter(item => 
     item.text.toLowerCase().includes(searchTerm.toLowerCase())
@@ -71,6 +73,14 @@ export default function Sentences() {
 
   return (
     <>
+      <div className="flex justify-end">
+        <Button onClick={() => setShowUploadFile(true)}>Add Sentence From File</Button>
+      </div>
+      {
+        showUploadFile && (
+          <AddSentenceFromFile showUploadFile={showUploadFile} setShowUploadFile={setShowUploadFile}/>
+        )
+      }
       <GenericTablePage<Sentence>
         title="Sentences Management"
         columns={sentencesColumns}

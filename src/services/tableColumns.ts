@@ -28,8 +28,8 @@ export const audiosColumns = [
   { key: 'id', label: 'ID', type: 'text' },
   { key: 'user_id', label: 'User ID', type: 'text' },
   { key: 'sentence_id', label: 'Sentence ID', type: 'text' },
-  { key: 'audio_url', label: 'Audio URL', type: 'text' },
-  { key: 'audio_path', label: 'Audio Path', type: 'text' },
+  { key: 'sentence', label: 'Sentence', type: 'text' },
+  { key: 'audio_path', label: 'Audio Path', type: 'audio_url' },
   { key: 'status', label: 'Status', type: 'select', options: [{ label: 'Pending', value: 'Pending' }, { label: 'Checked', value: 'Checked' }, { label: 'Rejected', value: 'Rejected' }] },
   { key: 'created_at', label: 'Created At', type: 'date' },
 ]
@@ -38,9 +38,8 @@ export const checkedAudiosColumns = [
   { key: 'id', label: 'ID', type: 'text' },
   { key: 'audio_id', label: 'Audio ID', type: 'text' },
   { key: 'checked_by', label: 'Checked By', type: 'text' },
-  { key: 'comment', label: 'Comment', width: 'w-3/12', type: 'textarea' },
+  { key: 'comment', label: 'Comment', width: 'w-2/12', type: 'textarea' },
   { key: 'is_correct', label: 'Is Correct', type: 'checkbox' },
   { key: 'status', label: 'Status', type: 'select', options: [{ label: 'Pending', value: 'Pending' }, { label: 'Checked', value: 'Checked' }, { label: 'Rejected', value: 'Rejected' }] },
-  { key: 'is_checked', label: 'Is Checked', type: 'checkbox' },
   { key: 'checked_at', label: 'Checked At', type: 'date' },
 ]
