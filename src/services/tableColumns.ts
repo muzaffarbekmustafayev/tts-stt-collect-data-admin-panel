@@ -40,7 +40,7 @@ export const audiosColumns = [
   { key: 'sentence_id', label: 'Sentence ID', type: 'text', required: true, is_reference: true, reference: 'sentences' },
   { key: 'sentence', label: 'Sentence', type: 'text', noedit: true },
   { key: 'audio_path', label: 'Audio Path', type: 'audio_url' },
-  { key: 'status', label: 'Status', type: 'select', options: [{ label: 'Pending', value: 'Pending' }, { label: 'Checked', value: 'Checked' }, { label: 'Rejected', value: 'Rejected' }] },
+  { key: 'status', label: 'Status', type: 'select', options: [{ label: 'Pending', value: 'pending' }, { label: 'Approved', value: 'approved' }] },
   { key: 'created_at', label: 'Created At', type: 'date' },
 ]
 
@@ -50,6 +50,6 @@ export const checkedAudiosColumns = [
   { key: 'checked_by', label: 'Checked By', type: 'text', required: true, is_reference: true, reference: 'users' },
   { key: 'comment', label: 'Comment', width: 'w-2/12', type: 'textarea' },
   { key: 'is_correct', label: 'Is Correct', type: 'select', options: [{ label: 'Yes', value: 'true' }, { label: 'No', value: 'false' }], required: true },
-  { key: 'status', label: 'Status', type: 'select', options: [{ label: 'Pending', value: 'Pending' }, { label: 'Checked', value: 'Checked' }, { label: 'Rejected', value: 'Rejected' }] },
+  { key: 'status', label: 'Status', type: 'select', options: [{ label: 'Pending', value: 'pending' }, { label: 'Approved', value: 'approved' }] },
   { key: 'checked_at', label: 'Checked At', type: 'date' },
 ]

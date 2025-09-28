@@ -26,6 +26,7 @@ export default function Audios() {
   )
 
   const handleAddAudio = () => {
+    return toast.error('Add audio is not allowed');
     setShowAddForm(true);
   };
 
@@ -33,10 +34,36 @@ export default function Audios() {
     setEditingItem(audio);
   };
 
-  const handleSaveAudio = (audio: Audio) => {
-    console.log(audio);
-    setEditingItem(null);
-    // TODO: Implement refresh data logic
+  const handleSaveAudio = async (audio: Audio) => {
+    if(!audio || !audio.user_id || !audio.sentence_id || !audio.audio_path) return toast.error('Audio is not valid');
+    try {
+      if(audio.user_id < 1 || audio.sentence_id < 1 || audio.audio_path === '-') {
+        toast.error('Some fields are not valid');
+        return;
+      }
+      if (!token) return;
+      if (!editingItem) {
+        const response = await apiService.addAudio(audio, token);
+        if (response?.success) {
+          toast.success('Audio added successfully');
+        } else {
+          toast.error('Failed to add audio');
+        }
+        setShowAddForm(false);
+      } else {
+        const response = await apiService.updateAudio(audio, token);
+        if (response.success) {
+          toast.success('Audio updated successfully');
+        } else {
+          toast.error('Failed to update audio');
+        }
+        setEditingItem(null);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error('Failed to save audio: ' + (error as Error).message);
+    }
+    fetchAudios(page, limit, token);
   };
 
   const handleDeleteAudio = async (id: string | number) => {
@@ -53,7 +80,7 @@ export default function Audios() {
         }
       } catch (error) {
         console.log(error);
-        toast.error('Failed to delete audio:' + (error as Error).message);
+        toast.error('Failed to delete audio: ' + (error as Error).message);
       }
     }
   };

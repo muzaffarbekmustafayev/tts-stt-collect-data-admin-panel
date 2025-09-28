@@ -26,6 +26,7 @@ export default function CheckedAudios() {
   )
 
   const handleAddCheckedAudio = () => {
+    return toast.error('Add checked audio is not allowed');
     setShowAddForm(true);
   };
 
@@ -33,10 +34,38 @@ export default function CheckedAudios() {
     setEditingItem(audio);
   };
 
-  const handleSaveCheckedAudio = (audio: CheckedAudio) => {
-    console.log(audio);
-    setEditingItem(null);
-    // TODO: Implement refresh data logic
+  const handleSaveCheckedAudio = async (checkedAudio: CheckedAudio) => {
+    console.log(checkedAudio);
+    
+    if(!checkedAudio) return toast.error('Checked Audio is not valid');
+    try {
+      if(!checkedAudio.checked_by || !checkedAudio.audio_id || !checkedAudio.status || checkedAudio.is_correct === null) {
+        toast.error('Some fields are not valid');
+        return;
+      }
+      if (!token) return;
+      if (!editingItem) {
+        const response = await apiService.addCheckedAudio(checkedAudio, token);
+        if (response?.success) {
+          toast.success('Checked Audio added successfully');
+        } else {
+          toast.error('Failed to add checked audio');
+        }
+        setShowAddForm(false);
+      } else {
+        const response = await apiService.updateCheckedAudio(checkedAudio, token);
+        if (response.success) {
+          toast.success('Checked Audio updated successfully');
+        } else {
+          toast.error('Failed to update checked audio');
+        }
+        setEditingItem(null);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error('Failed to save checked audio: ' + (error as Error).message);
+    }
+    fetchCheckedAudios(page, limit, token);
   };
 
   const handleDeleteCheckedAudio = async (id: string | number) => {

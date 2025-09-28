@@ -209,25 +209,26 @@ class ApiService {
   }
 
   //============ audios methods ============
-  // async addAudio(audio: Audio, token: string,) {
-  //   return this.request<Audio>(`/audios`, {
-  //     method: 'POST',
-  //     body: JSON.stringify(
-  //       {user_id: audio.user_id || '', sentence_id: audio.sentence_id || '', audio_path: audio.audio_path || ''}
-  //     ),
-  //     headers: {'accept': 'application/json',},
-  //   }, token, 'application/json');
-  // }
+  async addAudio(audio: Audio, token: string,) {
+    return;
+    return this.request<Audio>(`/audios`, {
+      method: 'POST',
+      body: JSON.stringify(
+        {user_id: audio.user_id || '', sentence_id: audio.sentence_id || '', audio_path: audio.audio_path || '', status: audio.status || ''}
+      ),
+      headers: {'accept': 'application/json',},
+    }, token, 'application/json');
+  }
   
-  // async updateAudio(audio: Audio, token: string) {
-  //   return this.request<Audio>(`/admin/audios/${audio.id}`, {
-  //     method: 'PUT',
-  //     body: JSON.stringify(
-  //       {user_id: audio.user_id || '', sentence_id: audio.sentence_id || '', audio_path: audio.audio_path || ''}
-  //     ),
-  //     headers: {'accept': 'application/json'}
-  //   }, token, 'application/json');
-  // }
+  async updateAudio(audio: Audio, token: string) {
+    return this.request<Audio>(`/admin/audios/${audio.id}`, {
+      method: 'PUT',
+      body: JSON.stringify(
+        {user_id: audio.user_id || '', sentence_id: audio.sentence_id || '', audio_path: audio.audio_path || '', status: audio.status || ''}
+      ),
+      headers: {'accept': 'application/json'}
+    }, token, 'application/json');
+  }
 
   async deleteAudio(id: string | number, token: string) {
     return this.request<Audio>(`/received-audio/${id}`, {
@@ -237,25 +238,26 @@ class ApiService {
   
 
   //============ checked audios methods ============
-  // async addCheckedAudio(checkedAudio: CheckedAudio, token: string,) {
-  //   return this.request<CheckedAudio>(`/checked-audios`, {
-  //     method: 'POST',
-  //     body: JSON.stringify(
-  //       {audio_id: checkedAudio?.audio_id || '', checked_by: checkedAudio.checked_by || '', comment: checkedAudio.comment || '', is_correct: checkedAudio.is_correct || ''}
-  //     ),
-  //     headers: {'accept': 'application/json',},
-  //   }, token, 'application/json');
-  // }
+  async addCheckedAudio(checkedAudio: CheckedAudio, token: string,) {
+    return;
+    return this.request<CheckedAudio>(`/checked-audios`, {
+      method: 'POST',
+      body: JSON.stringify(
+        {audio_id: checkedAudio?.audio_id || '', checked_by: checkedAudio.checked_by || '', comment: checkedAudio.comment || '', is_correct: checkedAudio.is_correct || '', status: checkedAudio.status || ''}
+      ),
+      headers: {'accept': 'application/json',},
+    }, token, 'application/json');
+  }
   
-  // async updateCheckedAudio(checkedAudio: CheckedAudio, token: string) {
-  //   return this.request<CheckedAudio>(`/admin/checked-audios/${checkedAudio.id}`, {
-  //     method: 'PUT',
-  //     body: JSON.stringify(
-  //       {audio_id: checkedAudio?.audio_id || '', checked_by: checkedAudio.checked_by || '', comment: checkedAudio.comment || '', is_correct: checkedAudio.is_correct || ''}
-  //     ),
-  //     headers: {'accept': 'application/json'}
-  //   }, token, 'application/json');
-  // }
+  async updateCheckedAudio(checkedAudio: CheckedAudio, token: string) {
+    return this.request<CheckedAudio>(`/checked-audio/${checkedAudio.id}`, {
+      method: 'PUT',
+      body: JSON.stringify(
+        {audio_id: checkedAudio?.audio_id || '', checked_by: checkedAudio.checked_by || '', comment: checkedAudio.comment || '', is_correct: checkedAudio.is_correct , status: checkedAudio.status || ''}
+      ),
+      headers: {'accept': 'application/json'}
+    }, token, 'application/json');
+  }
 
   async deleteCheckedAudio(id: string | number, token: string) {
     return this.request<CheckedAudio>(`/checked-audio/${id}`, {

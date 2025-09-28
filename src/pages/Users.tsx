@@ -79,7 +79,7 @@ export default function Users() {
         }
       } catch (error) {
         console.log(error);
-        toast.error('Failed to delete user:' + (error as Error).message);
+        toast.error('Failed to delete user: ' + (error as Error).message);
       }
     }
   };

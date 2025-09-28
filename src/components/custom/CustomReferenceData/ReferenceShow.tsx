@@ -26,7 +26,6 @@ export default function ReferenceShow<T extends DataProps>({ setShowReference, r
   const [data, setData] = useState({});
 
   const fetchData = useCallback(async () => {
-    console.log(reference);
     try {
       if (reference) {
         if (reference.col.reference === 'users') {

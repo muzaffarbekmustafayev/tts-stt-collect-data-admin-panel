@@ -41,7 +41,7 @@ export type Audio = {
 export type CheckedAudio = {
   id: number;
   checked_by: number;
-  sentence_id: number;
+  audio_id: number;
   is_correct: boolean;
   comment: string;
   status: string;

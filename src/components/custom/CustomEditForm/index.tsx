@@ -11,7 +11,6 @@ export default function CustomEditForm<T extends DataProps>({
 }: GenericFormProps<T>) {
 
   const [currentData, setCurrentData] = useState<T>(item);
-  console.log(currentData);
   const handleSave = () => {
     onSave(currentData);
   };
