@@ -22,7 +22,7 @@ export const AddSentenceFromFile = ({setShowUploadFile}: AddSentenceFromFileProp
           </div>
           <div className="flex flex-col gap-2">
           <FileUpload
-            accept={{ "text/plain": [] }}
+            accept={{ "text/csv": [".csv"] }}
             maxSize={5 * 1024 * 1024}
             uploadUrl={backendUrl + "/sentences/file"}
             onUploadComplete={() => {
