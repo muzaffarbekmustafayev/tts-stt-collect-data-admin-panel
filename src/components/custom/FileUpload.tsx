@@ -27,7 +27,8 @@ function readableBytes(bytes: number): string {
 }
 
 export default function FileUpload({
-  accept = { "text/plain": [] },
+  accept = { "text/csv": [".csv"] },
+  // accept = { "text/plain": [] },
   maxSize = 10 * 1024 * 1024, // 10 MB
   onUploadComplete = () => {},
   uploadUrl = null,
@@ -44,7 +45,7 @@ export default function FileUpload({
         const f = acceptedFiles[0];
         setFile({
           file: f,
-          preview: f.type.startsWith("text/plain") ? URL.createObjectURL(f) : null,
+          preview: f.type === "text/csv" ? URL.createObjectURL(f) : null,
           errors: [],
           progress: 0,
           status: "ready",
@@ -55,7 +56,7 @@ export default function FileUpload({
         const rej = fileRejections[0];
         setFile({
           file: rej.file,
-          preview: rej.file.type.startsWith("text/plain")
+          preview: rej.file.type == "text/csv"
             ? URL.createObjectURL(rej.file)
             : null,
           errors: rej.errors.map((e) => e.message),
