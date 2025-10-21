@@ -1,5 +1,5 @@
 import { useData } from "@/hooks/useData";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { checkedAudiosColumns } from "@/services/tableColumns";
 import { useAuth } from "@/hooks/useAuth";
 import GenericTablePage from "@/components/custom/GenericTablePage";
@@ -14,7 +14,7 @@ export default function CheckedAudios() {
   const { token } = useAuth();
   const { checkedAudiosData, stats, fetchCheckedAudios, loading } = useData()
   
-  const limit = 20
+  const [limit, setLimit] = useState<number>(20)
   const [searchTerm, setSearchTerm] = useState('')
   const [page, setPage] = useState(1)
   const [editingItem, setEditingItem] = useState<CheckedAudio | null>(null)
@@ -91,11 +91,11 @@ export default function CheckedAudios() {
     setSearchTerm(term);
   };
 
-  const handleRefreshData = () => {
+  const handleRefreshData = useCallback(() => {
     if (token) {
       fetchCheckedAudios(page, limit, token);
     }
-  };
+  }, [token, fetchCheckedAudios, page, limit]);
   
   const handleNextPage = () => {
     if (page < Math.ceil((stats.audios as unknown as number) / limit)) {
@@ -113,6 +113,10 @@ export default function CheckedAudios() {
       setPage(page - 1);
     }
   };
+
+  useEffect(() => {
+    handleRefreshData();
+  }, [handleRefreshData, limit]);
 
   return (
     <>
@@ -145,6 +149,8 @@ export default function CheckedAudios() {
           delete: true,
           view: false
         }}
+        setLimit={setLimit}
+        limit={limit}
       />
 
       {editingItem && (

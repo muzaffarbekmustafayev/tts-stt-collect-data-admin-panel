@@ -1,5 +1,5 @@
 import { useData } from "@/hooks/useData";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { usersColumns } from "@/services/tableColumns";
 import { useAuth } from "@/hooks/useAuth";
 import GenericTablePage from "@/components/custom/GenericTablePage";
@@ -14,7 +14,7 @@ export default function Users() {
   const { token } = useAuth();
   const { usersData, stats, fetchUsers, loading} = useData()
 
-  const limit = 20
+  const [limit, setLimit] = useState<number>(20)
   const [searchTerm, setSearchTerm] = useState('')
   const [page, setPage] = useState(1)
   const [editingItem, setEditingItem] = useState<User | null>(null)
@@ -88,11 +88,11 @@ export default function Users() {
     setSearchTerm(term);
   };
 
-  const handleRefreshData = () => {
+  const handleRefreshData = useCallback(() => {
     if (token) {
       fetchUsers(page, limit, token);
     }
-  };
+  }, [token, fetchUsers, page, limit]);
   
   const handleNextPage = () => {
     if (page < Math.ceil(stats.users / limit)) {
@@ -110,6 +110,10 @@ export default function Users() {
       setPage(page - 1);
     }
   };
+
+  useEffect(() => {
+    handleRefreshData();
+  }, [handleRefreshData, limit]);
 
   return (
     <>
@@ -142,6 +146,8 @@ export default function Users() {
           delete: true,
           view: false
         }}
+        setLimit={setLimit}
+        limit={limit}
       />
 
       {editingItem && (

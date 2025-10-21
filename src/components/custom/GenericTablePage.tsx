@@ -5,6 +5,15 @@ import TablePage from "./TablePage";
 import type { GenericTableProps, DataProps, SearchProps, PaginationProps } from "./CustomTable/interfaces";
 import { Button } from "../ui/button";
 import { RefreshCcw } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 interface GenericTablePageProps<T extends DataProps> {
   title?: string;
@@ -29,6 +38,8 @@ interface GenericTablePageProps<T extends DataProps> {
   canNotAdd?: boolean;
   canNotEdit?: boolean;
   canNotDelete?: boolean;
+  setLimit?: (limit: number) => void;
+  limit?: number;
 }
 
 export default function GenericTablePage<T extends DataProps>({
@@ -53,7 +64,9 @@ export default function GenericTablePage<T extends DataProps>({
   },
   canNotAdd = false,
   canNotEdit = false,
-  canNotDelete = false
+  canNotDelete = false,
+  setLimit,
+  limit,
 }: GenericTablePageProps<T>) {
   return (
     <div className="space-y-4">
@@ -67,13 +80,30 @@ export default function GenericTablePage<T extends DataProps>({
       </div>
 
       <div className="flex justify-between items-center space-x-4">
-        {searchProps && (
-          <SearchItem 
-            searchTerm={searchProps.searchTerm} 
-            setSearchTerm={searchProps.setSearchTerm} 
-            placeholder={searchProps.placeholder || "Search..."} 
-          />
-        )}
+        <div className="flex items-center space-x-4">
+          {searchProps && (
+            <SearchItem 
+              searchTerm={searchProps.searchTerm} 
+              setSearchTerm={searchProps.setSearchTerm} 
+              placeholder={searchProps.placeholder || "Search..."} 
+            />
+          )}
+
+          <Select defaultValue={limit?.toString() || "20"} onValueChange={(value) => setLimit?.(Number(value))}>
+            <SelectTrigger className="w-[100px] ml-2 px-1">
+              <SelectValue placeholder="Select Page Limit" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Page Limit</SelectLabel>
+                <SelectItem value="10">10</SelectItem>
+                <SelectItem value="20">20</SelectItem>
+                <SelectItem value="50">50</SelectItem>
+                <SelectItem value="100">100</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
         {onAdd && !canNotAdd && (
           <AddItem onClick={onAdd} text={addButtonText} />
         )}

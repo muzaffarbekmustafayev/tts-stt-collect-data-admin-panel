@@ -1,5 +1,5 @@
 import { useData } from "@/hooks/useData";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { audiosColumns } from "@/services/tableColumns";
 import { useAuth } from "@/hooks/useAuth";
 import GenericTablePage from "@/components/custom/GenericTablePage";
@@ -14,7 +14,7 @@ export default function Audios() {
   const { token } = useAuth();
   const { audiosData, stats, fetchAudios, loading } = useData()
 
-  const limit = 20
+  const [limit, setLimit] = useState<number>(20)
   const [searchTerm, setSearchTerm] = useState('')
   const [page, setPage] = useState(1)
   const [editingItem, setEditingItem] = useState<Audio | null>(null)
@@ -89,11 +89,11 @@ export default function Audios() {
     setSearchTerm(term);
   };
 
-  const handleRefreshData = () => {
+  const handleRefreshData = useCallback(() => {
     if (token) {
       fetchAudios(page, limit, token);
     }
-  };
+  }, [token, fetchAudios, page, limit]);
   
   const handleNextPage = () => {
     if (page < Math.ceil((stats.audios as unknown as number) / limit)) {
@@ -111,6 +111,10 @@ export default function Audios() {
       setPage(page - 1);
     }
   };
+
+  useEffect(() => {
+    handleRefreshData();
+  }, [handleRefreshData, limit]);
 
   return (
     <>
@@ -143,6 +147,8 @@ export default function Audios() {
           delete: true,
           view: false
         }}
+        setLimit={setLimit}
+        limit={limit}
       />
 
       {editingItem && (
