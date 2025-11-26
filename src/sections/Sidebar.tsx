@@ -35,7 +35,8 @@ const Sidebar = ({ isOpen, setIsOpen }: { isOpen: boolean, setIsOpen: (isOpen: b
           { key: pageNames.admins.prefix, icon: ShieldCheck, label: pageNames.admins.name },
           { key: pageNames.sentences.prefix, icon: FileText, label: pageNames.sentences.name },
           { key: pageNames.audios.prefix, icon: Volume2, label: pageNames.audios.name },
-          { key: pageNames.checked_audios.prefix, icon: CheckCircle, label: pageNames.checked_audios.name }
+          { key: pageNames.checked_audios.prefix, icon: CheckCircle, label: pageNames.checked_audios.name },
+          // { key: pageNames.statistics.prefix, icon: BarChart3, label: pageNames.statistics.name }
         ].map(item => (
           <button
             key={item.key}

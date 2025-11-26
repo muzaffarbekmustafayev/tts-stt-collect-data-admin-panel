@@ -1,10 +1,11 @@
 import CustomTable from "./CustomTable";
 import SearchItem from "./SearchItem";
+import FilterItem, { type FilterOption, type FilterState } from "./FilterItem";
 import AddItem from "./AddItem";
 import TablePage from "./TablePage";
 import type { GenericTableProps, DataProps, SearchProps, PaginationProps } from "./CustomTable/interfaces";
 import { Button } from "../ui/button";
-import { RefreshCcw } from "lucide-react";
+import { Filter, RefreshCcw, X } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -14,6 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { useState } from "react";
 
 interface GenericTablePageProps<T extends DataProps> {
   title?: string;
@@ -21,6 +23,12 @@ interface GenericTablePageProps<T extends DataProps> {
   data: T[];
   loading?: boolean;
   searchProps?: SearchProps;
+  filterProps?: {
+    filters: FilterOption[];
+    filterValues: FilterState;
+    onFilterChange: (key: string, value: string | number | undefined) => void;
+    onClearFilters: () => void;
+  };
   paginationProps?: PaginationProps;
   onAdd?: () => void;
   onEdit?: (item: T) => void;
@@ -48,6 +56,7 @@ export default function GenericTablePage<T extends DataProps>({
   data,
   loading = false,
   searchProps,
+  filterProps,
   paginationProps,
   onAdd,
   onEdit,
@@ -68,45 +77,60 @@ export default function GenericTablePage<T extends DataProps>({
   setLimit,
   limit,
 }: GenericTablePageProps<T>) {
+  const [showFilter, setShowFilter] = useState(false);
   return (
-    <div className="space-y-4">
-      <div className="flex items-center space-x-4">
-        <h1 className="text-2xl font-bold text-gray-900">{title || "Data Table"}</h1>
+    <div className="space-y-6 p-6 min-h-screen">
+      {/* Header Section */}
+      <div className="flex items-center justify-between">
+        <h1 className="text-3xl font-bold text-gray-900">{title || "Data Table"}</h1>
         {onRefresh && (
-          <Button onClick={onRefresh} className="bg-blue-500 text-white px-4 py-2 rounded-md" variant="outline">
-            <RefreshCcw className="w-4 h-4" />
-          </Button>
+          <Button 
+            onClick={onRefresh} 
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-sm transition-colors" 
+            variant="outline"
+          >
+            <RefreshCcw className="w-4 h-4 mr-2" />
+              Refresh
+            </Button>
         )}
       </div>
 
-      <div className="flex justify-between items-center space-x-4">
-        <div className="flex items-center space-x-4">
-          {searchProps && (
-            <SearchItem 
-              searchTerm={searchProps.searchTerm} 
-              setSearchTerm={searchProps.setSearchTerm} 
-              placeholder={searchProps.placeholder || "Search..."} 
-            />
-          )}
+      {showFilter && (
+        <FilterItem
+          filters={filterProps?.filters || []}
+          filterValues={filterProps?.filterValues || {}}
+          onFilterChange={filterProps?.onFilterChange || (() => {})}
+          onClearFilters={filterProps?.onClearFilters || (() => {})}
+          searchTerm={searchProps?.searchTerm || ''}
+          setSearchTerm={searchProps?.setSearchTerm || (() => {})}
+          placeholder={searchProps?.placeholder || "Filter by..."}
+        />
+      )}
 
-          <Select defaultValue={limit?.toString() || "20"} onValueChange={(value) => setLimit?.(Number(value))}>
-            <SelectTrigger className="w-[100px] ml-2 px-1">
-              <SelectValue placeholder="Select Page Limit" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel>Page Limit</SelectLabel>
-                <SelectItem value="10">10</SelectItem>
-                <SelectItem value="20">20</SelectItem>
-                <SelectItem value="50">50</SelectItem>
-                <SelectItem value="100">100</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
+      {/* Search and Filter Section */}
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+        <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
+          <div className="flex flex-col sm:flex-row gap-4 flex-1 align-middle">
+            <Button variant="outline" size="icon" onClick={() => setShowFilter(!showFilter)} className="mt-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-sm transition-colors">
+              {showFilter ? <X className="w-4 h-4" /> : <Filter className="w-4 h-4" />}
+            </Button>
+            {searchProps && (
+              <div className="flex-1 w-full lg:w-1/3 flex items-center justify-center">
+                <SearchItem
+                  searchTerm={searchProps.searchTerm} 
+                  setSearchTerm={searchProps.setSearchTerm} 
+                  placeholder={searchProps.placeholder || "Search..."} 
+                />
+              </div>
+            )}
+          </div>
+          
+          {onAdd && !canNotAdd && (
+            <div className="w-full sm:w-auto">
+              <AddItem onClick={onAdd} text={addButtonText} />
+            </div>
+          )}
         </div>
-        {onAdd && !canNotAdd && (
-          <AddItem onClick={onAdd} text={addButtonText} />
-        )}
       </div>
 
       <CustomTable
@@ -122,16 +146,32 @@ export default function GenericTablePage<T extends DataProps>({
         canNotEdit={canNotEdit}
         canNotDelete={canNotDelete}
       />
-      
-      {paginationProps && (
-        <TablePage 
-          currentPage={paginationProps.currentPage} 
-          total={paginationProps.total} 
-          limit={paginationProps.limit} 
-          onNext={paginationProps.onNext} 
-          onPrevious={paginationProps.onPrevious} 
-        />
-      )}
+
+      <div className="flex justify-end items-center space-x-4">
+          {paginationProps && (
+            <TablePage 
+              currentPage={paginationProps.currentPage} 
+              total={paginationProps.total} 
+              limit={paginationProps.limit} 
+              onNext={paginationProps.onNext} 
+              onPrevious={paginationProps.onPrevious} 
+            />
+          )}
+          <Select defaultValue={limit?.toString() || "20"} onValueChange={(value) => setLimit?.(Number(value))}>
+            <SelectTrigger className="w-[100px] ml-2 px-1">
+              <SelectValue placeholder="Select Page Limit" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Page Limit</SelectLabel>
+                <SelectItem value="10">10</SelectItem>
+                <SelectItem value="20">20</SelectItem>
+                <SelectItem value="50">50</SelectItem>
+                <SelectItem value="100">100</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+      </div>
     </div>
   );
 }
