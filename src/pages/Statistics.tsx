@@ -11,7 +11,7 @@ import { apiService } from "@/services/api";
 import { toast } from "sonner";
 import type { FilterState } from "@/components/custom/FilterItem";
 
-export default function Users() {
+export default function Statistics() {
   const { token } = useAuth();
   const { usersData, stats, fetchUsers, loading} = useData()
 
