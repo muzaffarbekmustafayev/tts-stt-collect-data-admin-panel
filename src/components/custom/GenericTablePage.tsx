@@ -3,7 +3,7 @@ import SearchItem from "./SearchItem";
 import FilterItem, { type FilterOption, type FilterState } from "./FilterItem";
 import AddItem from "./AddItem";
 import TablePage from "./TablePage";
-import type { GenericTableProps, DataProps, SearchProps, PaginationProps } from "./CustomTable/interfaces";
+import type { GenericTableProps, DataProps, SearchProps, PaginationProps, FindProps } from "./CustomTable/interfaces";
 import { Button } from "../ui/button";
 import { Filter, RefreshCcw, X } from "lucide-react";
 import {
@@ -23,6 +23,7 @@ interface GenericTablePageProps<T extends DataProps> {
   data: T[];
   loading?: boolean;
   searchProps?: SearchProps;
+  findProps?: FindProps;
   filterProps?: {
     filters: FilterOption[];
     filterValues: FilterState;
@@ -56,6 +57,7 @@ export default function GenericTablePage<T extends DataProps>({
   data,
   loading = false,
   searchProps,
+  findProps,
   filterProps,
   paginationProps,
   onAdd,
@@ -95,7 +97,7 @@ export default function GenericTablePage<T extends DataProps>({
         )}
       </div>
 
-      {showFilter && (
+      {showFilter && filterProps && (
         <FilterItem
           filters={filterProps?.filters || []}
           filterValues={filterProps?.filterValues || {}}
@@ -111,15 +113,18 @@ export default function GenericTablePage<T extends DataProps>({
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
         <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
           <div className="flex flex-col sm:flex-row gap-4 flex-1 align-middle">
-            <Button variant="outline" size="icon" onClick={() => setShowFilter(!showFilter)} className="mt-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-sm transition-colors">
-              {showFilter ? <X className="w-4 h-4" /> : <Filter className="w-4 h-4" />}
-            </Button>
-            {searchProps && (
+            {filterProps && (
+              <Button variant="outline" size="icon" onClick={() => setShowFilter(!showFilter)} className="mt-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow-sm transition-colors">
+                {showFilter ? <X className="w-4 h-4" /> : <Filter className="w-4 h-4" />}
+              </Button>
+            )}
+            {findProps && (
               <div className="flex-1 w-full lg:w-1/3 flex items-center justify-center">
                 <SearchItem
-                  searchTerm={searchProps.searchTerm} 
-                  setSearchTerm={searchProps.setSearchTerm} 
-                  placeholder={searchProps.placeholder || "Search..."} 
+                  searchTerm={findProps.findingValue} 
+                  setSearchTerm={findProps.setFindingValue} 
+                  placeholder={findProps.placeholder || "Find..."} 
+                  onFind={findProps.onFind || (() => {})}
                 />
               </div>
             )}

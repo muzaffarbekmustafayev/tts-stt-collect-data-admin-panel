@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import type { AdminUser, Audio, CheckedAudio, Sentence, User, Statistics } from '@/types/user';
 import { apiService } from '@/services/api';
+import type { UserStatistics } from '@/types/pageInterfaces';
 
 interface DataContextType {
   currentUser: AdminUser | null;
@@ -11,15 +12,17 @@ interface DataContextType {
   audiosData: Audio[];
   checkedAudiosData: CheckedAudio[];
   sentencesData: Sentence[];
+  userStatisticsData: UserStatistics[];
   stats: Statistics;
   loading: boolean;
   error: string | null;
-  fetchUsers: (page: number, limit: number, token: string | null) => Promise<void>;
+  fetchUsers: (page: number, limit: number, token: string | null, findingValue: string | null) => Promise<void>;
   fetchAdminUsers: (page: number, limit: number, token: string | null) => Promise<void>;
   fetchStats: (token: string | null) => Promise<void>;
-  fetchSentences: (page: number, limit: number, token: string | null) => Promise<void>;
+  fetchSentences: (page: number, limit: number, token: string | null, findingValue: string | null) => Promise<void>;
   fetchAudios: (page: number, limit: number, token: string | null) => Promise<void>;
   fetchCheckedAudios: (page: number, limit: number, token: string | null) => Promise<void>;
+  fetchUserStatistics: (page: number, limit: number, token: string | null, findingValue: string | null) => Promise<void>;
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
@@ -36,7 +39,8 @@ export const DataProvider = ({ children }: DataProviderProps) => {
     users: 0,
     audios: 0,
     checked_audios: 0,
-    admins: 0
+    admins: 0,
+    total_audio_duration: 0,
   });
   const [usersData, setUsersData] = useState<User[]>([]);
   const [currentUser, setCurrentUser] = useState<AdminUser | null>(null);
@@ -44,6 +48,7 @@ export const DataProvider = ({ children }: DataProviderProps) => {
   const [audiosData, setAudiosData] = useState<Audio[]>([]);
   const [checkedAudiosData, setCheckedAudiosData] = useState<CheckedAudio[]>([]);
   const [sentencesData, setSentencesData] = useState<Sentence[]>([]);
+  const [userStatisticsData, setUserStatisticsData] = useState<UserStatistics[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -61,7 +66,7 @@ export const DataProvider = ({ children }: DataProviderProps) => {
       setAdminUsersData(data.admin_users);
       setAudiosData(data.audios);
       setCheckedAudiosData(data.checked_audios);
-      setSentencesData(data.sentences);
+      setSentencesData(data.sentences);      
       setStats(data.statistics);
       data.admin_users.forEach((admin) => {
         if (admin.username === data.current_admin.username) {
@@ -96,7 +101,8 @@ export const DataProvider = ({ children }: DataProviderProps) => {
           users: data.data.users.length || 0,
           audios: data.data.audios.length || 0,
           checked_audios: data.data.checked_audios.length || 0,
-          admins: data.data.admin_users.length || 0
+          admins: data.data.admin_users.length || 0,
+          total_audio_duration: data.data.total_audio_duration || 0
         });
         setUsersData(data.data.users);
         setAdminUsersData(data.data.admin_users);
@@ -120,7 +126,7 @@ export const DataProvider = ({ children }: DataProviderProps) => {
     }
   }, [logout]);
 
-  const fetchUsers = useCallback(async (page: number = 1, limit: number = 10, token: string | null = null) => {
+  const fetchUsers = useCallback(async (page: number = 1, limit: number = 10, token: string | null = null, findingValue: string | null = null) => {
     if (!token) {
       setUsersData([]);
       return;
@@ -130,7 +136,7 @@ export const DataProvider = ({ children }: DataProviderProps) => {
     setError(null);
 
     try {
-      const data = await apiService.getUsers(page, limit, token);
+      const data = await apiService.getUsers(page, limit, token, findingValue ? findingValue : null);
       if (data.success) {
         setUsersData(data.data);
       } else {
@@ -182,7 +188,7 @@ export const DataProvider = ({ children }: DataProviderProps) => {
     setError(null);
   }, [logout]);
 
-  const fetchSentences = useCallback(async (page: number = 1, limit: number = 10, token: string | null = null) => {
+  const fetchSentences = useCallback(async (page: number = 1, limit: number = 10, token: string | null = null, findingValue: string | null = null) => {
     if (!token) {
       setSentencesData([]);
       return;
@@ -192,7 +198,7 @@ export const DataProvider = ({ children }: DataProviderProps) => {
     setError(null);
 
     try {
-      const data = await apiService.getSentences(page, limit, token);
+      const data = await apiService.getSentences(page, limit, token, findingValue ? findingValue : null);
       if (data.success) {
         setSentencesData(data.data);
       } else {
@@ -275,6 +281,36 @@ export const DataProvider = ({ children }: DataProviderProps) => {
     setError(null);
   }, [logout]);
 
+  const fetchUserStatistics = useCallback(async (page: number = 1, limit: number = 10, token: string | null = null, findingValue: string | null = null) => {
+    if (!token) {
+      setUserStatisticsData([]);
+      return;
+    }
+    setLoading(true);
+    setError(null);
+
+    try {
+      const data = await apiService.getUserStatistics(page, limit, token, findingValue ? findingValue : null);
+      if (data.success) {
+        setUserStatisticsData(data.data);
+      } else {
+        if(data.status && data.status === 401) {
+          logout();
+        }
+        setError(data.message || 'Failed to fetch data');
+      }
+    } catch (err) {
+      if(err instanceof Error && err.cause === "Unauthorized") {
+        logout();
+      }
+      setError('Failed to fetch data');
+      console.error('Error fetching data:', err);
+    }
+
+    setLoading(false);
+    setError(null);
+  }, [logout]);
+
   useEffect(() => {
     if (token) {
       fetchAllData(token);
@@ -287,6 +323,7 @@ export const DataProvider = ({ children }: DataProviderProps) => {
     audiosData,
     checkedAudiosData,
     sentencesData,
+    userStatisticsData,
     loading,
     error,
     currentUser,
@@ -297,6 +334,7 @@ export const DataProvider = ({ children }: DataProviderProps) => {
     fetchSentences,
     fetchAudios,
     fetchCheckedAudios,
+    fetchUserStatistics,
   };
 
   return (

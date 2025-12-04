@@ -54,6 +54,7 @@ export type Statistics = {
   audios: number;
   checked_audios: number;
   admins: number;
+  total_audio_duration: number;
 }
 export type Stats = {
   statistics: Statistics;
@@ -63,4 +64,5 @@ export type Stats = {
   checked_audios: CheckedAudio[];
   sentences: Sentence[];
   current_admin: CurrentAdmin;
+  total_audio_duration: number;
 }

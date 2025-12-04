@@ -91,6 +91,14 @@ export interface SearchProps {
   onSearch?: (term: string) => void;
 }
 
+// Find interface
+export interface FindProps {
+  findingValue: string;
+  setFindingValue: (value: string) => void;
+  placeholder?: string;
+  onFind?: () => void;
+}
+
 // Table page wrapper interface
 export interface TablePageProps<T extends DataProps> {
   title?: string;

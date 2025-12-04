@@ -17,5 +17,5 @@ export const pageNames = {
   sentences: {name: 'Sentences', prefix: '/sentences'},
   checked_audios: {name: 'Checked Audios', prefix: '/checked_audios'},
   admins: {name: 'Admins', prefix: '/admins'},
-  statistics: {name: 'Statistics', prefix: '/statistics'}
+  statistics: {name: 'User statistics', prefix: '/statistics'}
 }

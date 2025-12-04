@@ -6,6 +6,7 @@ import type {
   CheckedAudio,
   Stats,
 } from '@/types/user';
+import type { UserStatistics } from '@/types/pageInterfaces';
 const API_BASE_URL =
   import.meta.env.VITE_API_URL || 'https://asror-qobulov.jprq.site';
 
@@ -62,16 +63,28 @@ class ApiService {
   }
 
   // Data fetching methods
-  async getSentences(page: number = 1, limit: number = 10, token: string | null = null) {
-    return this.request<Sentence[]>(`/admin/sentences?page=${page}&limit=${limit}`, {
-      method: 'GET',
-    }, token);
+  async getSentences(page: number = 1, limit: number = 10, token: string | null = null, findingValue: string | null = null) {
+    if(findingValue) {
+      return this.request<Sentence[]>(`/admin/sentences?page=${page}&limit=${limit}&text=${findingValue}`, {
+        method: 'GET',
+      }, token);
+    } else {
+      return this.request<Sentence[]>(`/admin/sentences?page=${page}&limit=${limit}`, {
+        method: 'GET',
+      }, token);
+    }
   }
 
-  async getUsers(page: number = 1, limit: number = 10, token: string | null = null) {
-    return this.request<User[]>(`/admin/users?page=${page}&limit=${limit}`, {
-      method: 'GET',
-    }, token);
+  async getUsers(page: number = 1, limit: number = 10, token: string | null = null, findingValue: string | null = null) {
+    if(findingValue) {
+      return this.request<User[]>(`/admin/users?page=${page}&limit=${limit}&name=${findingValue}`, {
+        method: 'GET',
+      }, token);
+    } else {
+      return this.request<User[]>(`/admin/users?page=${page}&limit=${limit}`, {
+        method: 'GET',
+      }, token);
+    }
   }
 
   async getAudios(page: number = 1, limit: number = 10, token: string | null = null) {
@@ -284,6 +297,19 @@ class ApiService {
     return this.request<Audio>(`/received-audio/by-id/${id}`, {
       method: 'GET',
     }, token);
+  }
+
+  //============ user statistics methods ============
+  async getUserStatistics(page: number = 1, limit: number = 10, token: string | null = null, findingValue: string | null = null) {
+    if(findingValue) {
+      return this.request<UserStatistics[]>(`/statistic/by-users?page=${page}&limit=${limit}&name=${findingValue}`, {
+        method: 'GET',
+      }, token);
+    } else {
+      return this.request<UserStatistics[]>(`/statistic/by-users?page=${page}&limit=${limit}`, {
+        method: 'GET',
+      }, token);
+    }
   }
 
 }

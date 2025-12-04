@@ -17,6 +17,7 @@ export default function Users() {
 
   const [limit, setLimit] = useState<number>(20)
   const [searchTerm, setSearchTerm] = useState('')
+  const [findingValue, setFindingValue] = useState('')
   const [page, setPage] = useState(1)
   const [editingItem, setEditingItem] = useState<User | null>(null)
   const [showAddForm, setShowAddForm] = useState(false)
@@ -94,7 +95,7 @@ export default function Users() {
       console.log(error);
       toast.error('Failed to save user: ' + (error as Error).message);
     }
-    fetchUsers(page, limit, token);
+    fetchUsers(page, limit, token, null);
   };
 
   const handleDeleteUser = async (id: string | number) => {
@@ -105,7 +106,7 @@ export default function Users() {
         const response = await apiService.deleteUser(id, token);
         if (response.success) {
           toast.success('User deleted successfully');
-          fetchUsers(page, limit, token);
+          fetchUsers(page, limit, token, null);
         } else {
           toast.error('Failed to delete user');
         }
@@ -120,6 +121,13 @@ export default function Users() {
     setSearchTerm(term);
   };
 
+  const findHandler = () => {
+    if(!findingValue) return;
+    if (token) {
+      fetchUsers(page, limit, token, findingValue ? findingValue : null);
+    }
+  }
+
   const handleFilterChange = (key: string, value: string | number | undefined) => {
     setFilterValues(prev => ({
       ...prev,
@@ -133,14 +141,14 @@ export default function Users() {
 
   const handleRefreshData = useCallback(() => {
     if (token) {
-      fetchUsers(page, limit, token);
+      fetchUsers(page, limit, token, null);
     }
   }, [token, fetchUsers, page, limit]);
   
   const handleNextPage = () => {
     if (page < Math.ceil(stats.users / limit)) {
       if (token) {
-        fetchUsers(page + 1, limit, token);
+        fetchUsers(page + 1, limit, token, null);
       }
       setPage(page + 1);
     }
@@ -148,7 +156,7 @@ export default function Users() {
   const handlePreviousPage = () => {
     if (page > 1) {
       if (token) {
-        fetchUsers(page - 1, limit, token);
+        fetchUsers(page - 1, limit, token, null);
       }
       setPage(page - 1);
     }
@@ -175,6 +183,12 @@ export default function Users() {
           filterValues,
           onFilterChange: handleFilterChange,
           onClearFilters: handleClearFilters
+        }}
+        findProps={{
+          findingValue: findingValue,
+          setFindingValue: setFindingValue,
+          placeholder: 'Find by name...',
+          onFind: findHandler,
         }}
         paginationProps={{
           currentPage: page,
