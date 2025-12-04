@@ -16,7 +16,7 @@ const Sentences = lazy(() => import('@/pages/Sentences'))
 const AdminUsers = lazy(() => import('@/pages/AdminUser'))
 const Audios = lazy(() => import('@/pages/Audios'))
 const CheckedAudios = lazy(() => import('@/pages/CheckedAudio'))
-// const Statistics = lazy(() => import('@/pages/Statistics'))
+const Statistics = lazy(() => import('@/pages/Statistics'))
 
 const routes = [
   { path: pageNames.dashboard.prefix, component: Dashboard },
@@ -25,7 +25,7 @@ const routes = [
   { path: pageNames.admins.prefix, component: AdminUsers },
   { path: pageNames.audios.prefix, component: Audios },
   { path: pageNames.checked_audios.prefix, component: CheckedAudios },
-  // { path: pageNames.statistics.prefix, component: Statistics },
+  { path: pageNames.statistics.prefix, component: Statistics },
 ]
 
 function App() {

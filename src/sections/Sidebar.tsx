@@ -1,4 +1,4 @@
-import { CheckCircle, FileText, Home, Users, Volume2, LogOut, ShieldCheck, X } from "lucide-react";
+import { CheckCircle, FileText, Home, Users, Volume2, LogOut, ShieldCheck, X, BarChart3 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { pageNames } from "@/services/staticNames";
 import { useAuth } from "@/hooks/useAuth";
@@ -32,11 +32,11 @@ const Sidebar = ({ isOpen, setIsOpen }: { isOpen: boolean, setIsOpen: (isOpen: b
         {[
           { key: pageNames.dashboard.prefix, icon: Home, label: pageNames.dashboard.name },
           { key: pageNames.users.prefix, icon: Users, label: pageNames.users.name },
+          { key: pageNames.statistics.prefix, icon: BarChart3, label: pageNames.statistics.name },
           { key: pageNames.admins.prefix, icon: ShieldCheck, label: pageNames.admins.name },
           { key: pageNames.sentences.prefix, icon: FileText, label: pageNames.sentences.name },
           { key: pageNames.audios.prefix, icon: Volume2, label: pageNames.audios.name },
           { key: pageNames.checked_audios.prefix, icon: CheckCircle, label: pageNames.checked_audios.name },
-          // { key: pageNames.statistics.prefix, icon: BarChart3, label: pageNames.statistics.name }
         ].map(item => (
           <button
             key={item.key}

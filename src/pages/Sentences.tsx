@@ -17,6 +17,7 @@ export default function Sentences() {
   const { sentencesData, stats, fetchSentences, loading } = useData()
   const [limit, setLimit] = useState<number>(20)
   const [searchTerm, setSearchTerm] = useState('')
+  const [findingValue, setFindingValue] = useState('')
   const [page, setPage] = useState(1)
   const [editingItem, setEditingItem] = useState<Sentence | null>(null)
   const [showAddForm, setShowAddForm] = useState(false)
@@ -62,7 +63,7 @@ export default function Sentences() {
       console.log(error);
       toast.error('Failed to save sentence: ' + (error as Error).message);
     }
-    fetchSentences(page, limit, token);
+    fetchSentences(page, limit, token, null);
   };
 
   const handleDeleteSentence = async (id: string | number) => {
@@ -73,7 +74,7 @@ export default function Sentences() {
         const response = await apiService.deleteSentence(id, token);
         if (response.success) {
           toast.success('Sentence deleted successfully');
-          fetchSentences(page, limit, token);
+          fetchSentences(page, limit, token, null);
         } else {
           toast.error('Failed to delete sentence');
         }
@@ -88,16 +89,23 @@ export default function Sentences() {
     setSearchTerm(term);
   };
 
+  const findHandler = () => {
+    if(!findingValue) return;
+    if (token) {
+      fetchSentences(page, limit, token, findingValue ? findingValue : null);
+    }
+  }
+
   const handleRefreshData = useCallback(() => {
     if (token) {
-      fetchSentences(page, limit, token);
+      fetchSentences(page, limit, token, null);
     }
   }, [token, fetchSentences, page, limit]);
   
   const handleNextPage = () => {
     if (page < Math.ceil(stats.sentences / limit)) {
       if (token) {
-        fetchSentences(page + 1, limit, token);
+        fetchSentences(page + 1, limit, token, null);
       }
       setPage(page + 1);
     }
@@ -105,7 +113,7 @@ export default function Sentences() {
   const handlePreviousPage = () => {
     if (page > 1) {
       if (token) {
-        fetchSentences(page - 1, limit, token);
+        fetchSentences(page - 1, limit, token, null);
       }
       setPage(page - 1);
     }
@@ -134,6 +142,12 @@ export default function Sentences() {
           searchTerm,
           setSearchTerm: handleSearchSentences,
           placeholder: "Search by sentence..."
+        }}
+        findProps={{
+          findingValue: findingValue,
+          setFindingValue: setFindingValue,
+          placeholder: 'Find by sentence...',
+          onFind: findHandler,
         }}
         paginationProps={{
           currentPage: page,

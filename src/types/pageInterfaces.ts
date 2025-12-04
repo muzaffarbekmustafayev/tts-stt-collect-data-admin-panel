@@ -12,6 +12,18 @@ export interface User extends DataProps {
   created_at: string;
 }
 
+// User Statistics interface
+export interface UserStatistics extends DataProps {
+  id: number;
+  telegram_id?: string;
+  name: string;
+  sent_audio_count: number;
+  sent_audio_minutes: number;
+  checked_audio_count: number;
+  checked_audio_minutes: number;
+  pending_audio_count: number;
+  pending_checked_audio_count: number;
+}
 // AdminUser interface
 export interface AdminUser extends DataProps {
   id: number;
