@@ -17,6 +17,7 @@ export interface UserStatistics extends DataProps {
   id: number;
   telegram_id?: string;
   name: string;
+  info?: string;
   sent_audio_count: number;
   sent_audio_minutes: number;
   checked_audio_count: number;

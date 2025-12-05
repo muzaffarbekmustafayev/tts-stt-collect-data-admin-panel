@@ -13,6 +13,7 @@ export const userStatisticsColumns = [
   { key: 'user_id', label: 'ID', type: 'text' },
   { key: 'name', label: 'Name', type: 'text', noedit: true },
   { key: 'telegram_id', label: 'Telegram ID', type: 'number', noedit: true },
+  { key: 'info', label: 'Info', type: 'textarea', noedit: true },
   { key: 'sent_audio_count', label: 'Sent Audio Count', type: 'number' },
   { key: 'sent_audio_minutes', label: 'Sent Audio Minutes', type: 'number' },
   { key: 'checked_audio_count', label: 'Checked Audio Count', type: 'number' },

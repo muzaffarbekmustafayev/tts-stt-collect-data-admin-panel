@@ -97,18 +97,18 @@ export const DataProvider = ({ children }: DataProviderProps) => {
       const data = await apiService.getStats(token);
       if (data.success) {
         setStats({
-          sentences: data.data.sentences.length || 0,
-          users: data.data.users.length || 0,
-          audios: data.data.audios.length || 0,
-          checked_audios: data.data.checked_audios.length || 0,
-          admins: data.data.admin_users.length || 0,
-          total_audio_duration: data.data.total_audio_duration || 0
+          sentences: data.data.statistics.sentences || 0,
+          users: data.data.statistics.users || 0,
+          audios: data.data.statistics.audios || 0,
+          checked_audios: data.data.statistics.checked_audios || 0,
+          admins: data.data.statistics.admins || 0,
+          total_audio_duration: data.data.statistics.total_audio_duration ||0
         });
-        setUsersData(data.data.users);
-        setAdminUsersData(data.data.admin_users);
-        setAudiosData(data.data.audios);
-        setCheckedAudiosData(data.data.checked_audios);
-        setSentencesData(data.data.sentences);
+        // setUsersData(data.data.users);
+        // setAdminUsersData(data.data.admin_users);
+        // setAudiosData(data.data.audios);
+        // setCheckedAudiosData(data.data.checked_audios);
+        // setSentencesData(data.data.sentences);
       } else {
         if(data.status && data.status === 401) {
           logout();
