@@ -23,6 +23,7 @@ interface DataContextType {
   fetchAudios: (page: number, limit: number, token: string | null) => Promise<void>;
   fetchCheckedAudios: (page: number, limit: number, token: string | null) => Promise<void>;
   fetchUserStatistics: (page: number, limit: number, token: string | null, findingValue: string | null) => Promise<void>;
+  getUserStatisticsToDownload: () => Promise<UserStatistics[] | undefined>;
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
@@ -311,6 +312,32 @@ export const DataProvider = ({ children }: DataProviderProps) => {
     setError(null);
   }, [logout]);
 
+  const getUserStatisticsToDownload = useCallback(async () => {
+    if (!token) {
+      return;
+    }
+    try {
+      
+      const data = await apiService.getUserStatistics(1, 10000, token, null);
+      if (data.success) {
+        return data.data;
+      } else {
+        if(data.status && data.status === 401) {
+          logout();
+        }
+        setError(data.message || 'Failed to fetch data');
+      }
+    } catch (err) {
+      if(err instanceof Error && err.cause === "Unauthorized") {
+        logout();
+      }
+      setError('Failed to fetch data');
+      console.error('Error fetching data:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, [token, logout]);
+
   useEffect(() => {
     if (token) {
       fetchAllData(token);
@@ -335,6 +362,7 @@ export const DataProvider = ({ children }: DataProviderProps) => {
     fetchAudios,
     fetchCheckedAudios,
     fetchUserStatistics,
+    getUserStatisticsToDownload,
   };
 
   return (
