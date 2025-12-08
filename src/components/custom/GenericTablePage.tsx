@@ -36,6 +36,8 @@ interface GenericTablePageProps<T extends DataProps> {
   onDelete?: (id: string | number) => void;
   onView?: (item: T) => void;
   onRefresh?: () => void;
+  isEnabledExport?: boolean;
+  onDownload?: () => void;
   addButtonText?: string;
   emptyMessage?: string;
   showActions?: boolean;
@@ -68,6 +70,8 @@ export default function GenericTablePage<T extends DataProps>({
   addButtonText = "Add New",
   emptyMessage = "No data available",
   showActions = true,
+  isEnabledExport = false,
+  onDownload,
   actions = {
     edit: true,
     delete: true,
@@ -133,6 +137,18 @@ export default function GenericTablePage<T extends DataProps>({
           {onAdd && !canNotAdd && (
             <div className="w-full sm:w-auto">
               <AddItem onClick={onAdd} text={addButtonText} />
+            </div>
+          )}
+
+          {isEnabledExport && onDownload && (
+            <div className="w-full sm:w-auto">
+              <Button 
+                onClick={onDownload} 
+                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg shadow-sm transition-colors" 
+                variant="outline"
+              >
+                Export XLSX
+              </Button>
             </div>
           )}
         </div>

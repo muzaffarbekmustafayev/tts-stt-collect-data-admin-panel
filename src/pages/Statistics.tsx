@@ -5,10 +5,11 @@ import { useAuth } from "@/hooks/useAuth";
 import GenericTablePage from "@/components/custom/GenericTablePage";
 import type { UserStatistics } from "@/types/pageInterfaces";
 import type { FilterState } from "@/components/custom/FilterItem";
+import { utils, writeFile } from 'xlsx';
 
 export default function Statistics() {
   const { token } = useAuth();
-  const { userStatisticsData, stats, fetchUserStatistics, loading} = useData()
+  const { userStatisticsData, stats, fetchUserStatistics, loading, getUserStatisticsToDownload} = useData()
 
   const [limit, setLimit] = useState<number>(20)
   const [searchTerm, setSearchTerm] = useState('')
@@ -71,6 +72,16 @@ export default function Statistics() {
     }
   };
 
+  const downloadStatisticsXLSX = async () => {
+    const dataToDownload = await getUserStatisticsToDownload();
+    if (!dataToDownload) return;
+
+    const ws = utils.json_to_sheet(dataToDownload);
+    const wb = utils.book_new();
+    utils.book_append_sheet(wb, ws, "Data");
+    writeFile(wb, "statistics.xlsx");
+  };
+
   useEffect(() => {
     handleRefreshData();
   }, [handleRefreshData, limit]);
@@ -106,6 +117,8 @@ export default function Statistics() {
           onNext: handleNextPage,
           onPrevious: handlePreviousPage
         }}
+        isEnabledExport={true}
+        onDownload={downloadStatisticsXLSX}
         onRefresh={handleRefreshData}
         showActions={false}
         addButtonText="No action"
