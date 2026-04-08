@@ -1,20 +1,18 @@
 import type { DataProps } from "@/components/custom/CustomTable/interfaces";
 
-// User interface - using existing User type from user.ts
 export interface User extends DataProps {
-  id: number;
+  id: string;
   telegram_id?: string;
   name: string;
   gender: string;
   age: number;
-  // phone: string;
   info?: string;
   created_at: string;
 }
 
-// User Statistics interface
 export interface UserStatistics extends DataProps {
-  id: number;
+  user_id: string;
+  id: string;
   telegram_id?: string;
   name: string;
   info?: string;
@@ -25,24 +23,24 @@ export interface UserStatistics extends DataProps {
   pending_audio_count: number;
   pending_checked_audio_count: number;
 }
-// AdminUser interface
+
 export interface AdminUser extends DataProps {
-  id: number;
+  id: string;
   username: string;
   is_active: boolean;
   role: string;
+  password?: string;
   created_at?: string;
+  updated_at?: string;
 }
 
-// Sentence interface
 export interface Sentence extends DataProps {
-  id: number;
+  id: string;
   text: string;
   language: string;
   created_at: string;
 }
 
-// Users page specific interface
 export interface UsersPageProps {
   users: User[];
   loading: boolean;
@@ -62,7 +60,6 @@ export interface UsersPageProps {
   onSearchUsers: (term: string) => void;
 }
 
-// Sentences page specific interface
 export interface SentencesPageProps {
   sentences: Sentence[];
   loading: boolean;
@@ -78,11 +75,10 @@ export interface SentencesPageProps {
   setShowAddForm: (show: boolean) => void;
   onAddSentence: () => void;
   onEditSentence: (sentence: Sentence) => void;
-  onDeleteSentence: (id: number) => void;
+  onDeleteSentence: (id: string) => void;
   onSearchSentences: (term: string) => void;
 }
 
-// AdminUsers page specific interface
 export interface AdminUsersPageProps {
   adminUsers: AdminUser[];
   loading: boolean;
@@ -102,7 +98,6 @@ export interface AdminUsersPageProps {
   onSearchAdminUsers: (term: string) => void;
 }
 
-// Generic page interface for any data type
 export interface GenericPageProps<T extends DataProps> {
   data: T[];
   loading: boolean;

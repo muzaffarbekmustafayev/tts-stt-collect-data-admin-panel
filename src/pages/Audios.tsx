@@ -37,7 +37,7 @@ export default function Audios() {
   const handleSaveAudio = async (audio: Audio) => {
     if(!audio || !audio.user_id || !audio.sentence_id || !audio.audio_path) return toast.error('Audio is not valid');
     try {
-      if(audio.user_id < 1 || audio.sentence_id < 1 || audio.audio_path === '-') {
+      if(!audio.user_id || !audio.sentence_id || audio.audio_path === '-') {
         toast.error('Some fields are not valid');
         return;
       }
