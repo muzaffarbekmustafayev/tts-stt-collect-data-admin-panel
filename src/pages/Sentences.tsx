@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { sentencesColumns } from "@/services/tableColumns";
 import { useAuth } from "@/hooks/useAuth";
 import GenericTablePage from "@/components/custom/GenericTablePage";
-import type { Sentence } from "@/types/pageInterfaces";
+import type { Sentence } from "@/types/user";
 import GenericEditForm from "@/components/custom/GenericEditForm";
 import type { FieldProps } from "@/components/custom/CustomEditForm/interfaces";
 import GenericAddForm from "@/components/custom/GenerigAddForm";

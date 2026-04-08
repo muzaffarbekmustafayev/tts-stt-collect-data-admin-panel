@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState, useMemo } from "react";
 import { usersColumns } from "@/services/tableColumns";
 import { useAuth } from "@/hooks/useAuth";
 import GenericTablePage from "@/components/custom/GenericTablePage";
-import type { User } from "@/types/pageInterfaces";
+import type { User } from "@/types/user";
 import GenericEditForm from "@/components/custom/GenericEditForm";
 import type { FieldProps } from "@/components/custom/CustomEditForm/interfaces";
 import GenericAddForm from "@/components/custom/GenerigAddForm";
