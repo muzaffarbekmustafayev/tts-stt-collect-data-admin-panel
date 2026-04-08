@@ -10,6 +10,14 @@ import type { UserStatistics } from '@/types/pageInterfaces';
 const API_BASE_URL =
   import.meta.env.VITE_API_URL || 'https://asror-qobulov.jprq.site';
 
+export interface PaginatedResponse<T> {
+  data: T[];
+  total: number;
+  page: number;
+  limit: number;
+  pages: number;
+}
+
 export interface ApiResponse<T> {
   data: T;
   success: boolean;
@@ -88,13 +96,13 @@ class ApiService {
   }
 
   async getAudios(page: number = 1, limit: number = 10, token: string | null = null) {
-    return this.request<Audio[]>(`/admin/audios?page=${page}&limit=${limit}`, {
+    return this.request<PaginatedResponse<Audio>>(`/admin/audios?page=${page}&limit=${limit}`, {
       method: 'GET',
     }, token);
   }
 
   async getCheckedAudios(page: number = 1, limit: number = 10, token: string | null = null) {
-    return this.request<CheckedAudio[]>(`/admin/checked-audios?page=${page}&limit=${limit}`, {
+    return this.request<PaginatedResponse<CheckedAudio>>(`/admin/checked-audios?page=${page}&limit=${limit}`, {
       method: 'GET',
     }, token);
   }

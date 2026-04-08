@@ -63,17 +63,23 @@ export const DataProvider = ({ children }: DataProviderProps) => {
 
     try {
       const data = await apiService.getAllData(token);
-      setUsersData(data.users);
-      setAdminUsersData(data.admin_users);
-      setAudiosData(data.audios);
-      setCheckedAudiosData(data.checked_audios);
-      setSentencesData(data.sentences);      
-      setStats(data.statistics);
-      data.admin_users.forEach((admin) => {
-        if (admin.username === data.current_admin.username) {
-          setCurrentUser(admin);
-        }
+      setUsersData(data.users || []);
+      setAdminUsersData(data.admin_users || []);
+      setAudiosData(data.audios || []);
+      setCheckedAudiosData(data.checked_audios || []);
+      setSentencesData(data.sentences || []);
+      setStats({
+        sentences: data.statistics?.sentences || 0,
+        users: data.statistics?.users || 0,
+        audios: data.statistics?.audios || 0,
+        checked_audios: data.statistics?.checked_audios || 0,
+        admins: data.statistics?.admins || 0,
+        total_audio_duration: data.statistics?.total_audio_duration_minutes || data.statistics?.total_audio_duration || 0,
       });
+      if (data.current_admin && data.admin_users) {
+        const found = data.admin_users.find((admin: AdminUser) => admin.username === data.current_admin.username);
+        if (found) setCurrentUser(found);
+      }
     } catch (err) {
       if(err instanceof Error && err.cause === "Unauthorized") {
         logout();
@@ -103,7 +109,7 @@ export const DataProvider = ({ children }: DataProviderProps) => {
           audios: data.data.statistics.audios || 0,
           checked_audios: data.data.statistics.checked_audios || 0,
           admins: data.data.statistics.admins || 0,
-          total_audio_duration: data.data.statistics.total_audio_duration ||0
+          total_audio_duration: data.data.statistics.total_audio_duration_minutes || data.data.statistics.total_audio_duration || 0
         });
         // setUsersData(data.data.users);
         // setAdminUsersData(data.data.admin_users);
@@ -232,7 +238,8 @@ export const DataProvider = ({ children }: DataProviderProps) => {
     try {
       const data = await apiService.getAudios(page, limit, token);
       if (data.success) {
-        setAudiosData(data.data);
+        // Backend returns {data: [...], total, page, limit, pages}
+        setAudiosData(data.data.data ?? data.data as unknown as Audio[]);
       } else {
         if(data.status && data.status === 401) {
           logout();
@@ -263,7 +270,8 @@ export const DataProvider = ({ children }: DataProviderProps) => {
     try {
       const data = await apiService.getCheckedAudios(page, limit, token);
       if (data.success) {
-        setCheckedAudiosData(data.data);
+        // Backend returns {data: [...], total, page, limit, pages}
+        setCheckedAudiosData(data.data.data ?? data.data as unknown as CheckedAudio[]);
       } else {
         if(data.status && data.status === 401) {
           logout();

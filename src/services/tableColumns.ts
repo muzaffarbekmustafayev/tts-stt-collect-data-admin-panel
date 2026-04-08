@@ -49,11 +49,11 @@ export const sentencesColumns = [
 
 export const audiosColumns = [
   { key: 'id', label: 'ID', type: 'text' },
-  // { key: 'user_id', label: 'User ID', type: 'text', required: true, is_reference: true, reference: 'users' },
-  { key: 'user_name', label: 'User Name', type: 'text', required: true, is_reference: true, reference: 'users', noedit: true },
-  { key: 'sentence_id', label: 'Sentence ID', type: 'text', required: true, is_reference: true, reference: 'sentences' },
+  { key: 'user_name', label: 'User Name', type: 'text', noedit: true },
+  { key: 'user_id', label: 'User ID', type: 'text', noedit: true },
   { key: 'sentence', label: 'Sentence', type: 'text', noedit: true },
-  { key: 'audio_path', label: 'Audio Path', type: 'audio_url' },
+  { key: 'sentence_id', label: 'Sentence ID', type: 'text', required: true, is_reference: true, reference: 'sentences' },
+  { key: 'audio_path', label: 'Audio', type: 'audio_url' },
   { key: 'duration', label: 'Duration (s)', type: 'number' },
   { key: 'status', label: 'Status', type: 'select', options: [{ label: 'Pending', value: 'pending' }, { label: 'Approved', value: 'approved' }] },
   { key: 'created_at', label: 'Created At', type: 'date' },
@@ -62,12 +62,13 @@ export const audiosColumns = [
 export const checkedAudiosColumns = [
   { key: 'id', label: 'ID', type: 'text' },
   { key: 'audio_id', label: 'Audio ID', type: 'text', required: true, is_reference: true, reference: 'audios' },
-  { key: 'checked_by_name', label: 'Checked By', type: 'text', required: true, is_reference: true, reference: 'users', noedit: true },
-  // { key: 'comment', label: 'Comment', width: 'w-2/12', type: 'textarea' },
+  { key: 'user_name', label: 'User', type: 'text', noedit: true },
+  { key: 'sentence', label: 'Sentence', type: 'text', noedit: true },
+  { key: 'checked_by_name', label: 'Checked By', type: 'text', noedit: true },
   { key: 'is_correct', label: 'Is Correct', type: 'select', options: [{ label: 'Yes', value: 'true' }, { label: 'No', value: 'false' }], required: true },
   { key: 'status', label: 'Status', type: 'select', options: [{ label: 'Pending', value: 'pending' }, { label: 'Approved', value: 'approved' }] },
   { key: 'checked_at', label: 'Checked At', type: 'date' },
-  { key: 'second_checker_name', label: 'Second Checker', type: 'text', required: true, is_reference: true, reference: 'admins' },
-  { key: 'second_check_result', label: 'Second Check Result', type: 'select', options: [{ label: '-', value: 'null' }, { label: 'Yes', value: 'true' }, { label: 'No', value: 'false' }], required: true },
+  { key: 'second_checker_name', label: 'Second Checker', type: 'text', noedit: true },
+  { key: 'second_check_result', label: 'Second Check Result', type: 'select', options: [{ label: '-', value: 'null' }, { label: 'Yes', value: 'true' }, { label: 'No', value: 'false' }] },
   { key: 'second_checked_at', label: 'Second Checked At', type: 'date' },
 ]

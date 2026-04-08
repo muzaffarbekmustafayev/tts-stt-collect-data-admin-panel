@@ -1,6 +1,7 @@
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
@@ -29,37 +30,39 @@ export default function ReferenceShow<T extends DataProps>({ setShowReference, r
     try {
       if (reference) {
         if (reference.col.reference === 'users') {
-          const user_id = reference.item.user_id as number || reference.item.checked_by as number;
+          const user_id = (reference.item as Record<string, unknown>).user_id as string
+            || (reference.item as Record<string, unknown>).checked_by as string;
+          if (!user_id || user_id === 'undefined' || user_id === 'null') return;
           const res = await apiService.getReferenceUser(user_id, token as string);
           if (res.success) {
             setData(res.data);
           } else if(res.status && res.status === 401) {
             logout();
-          }
-          else {
+          } else {
             toast.error('Failed to fetch data: '+ res.message);
           }
         }
         else if (reference.col.reference === 'sentences') {
-          const res = await apiService.getReferenceSentence(reference.item.sentence_id as number, token as string);
+          const sentence_id = (reference.item as Record<string, unknown>).sentence_id as string;
+          if (!sentence_id || sentence_id === 'undefined' || sentence_id === 'null') return;
+          const res = await apiService.getReferenceSentence(sentence_id, token as string);
           if (res.success) {
             setData(res.data);
           } else if(res.status && res.status === 401) {
             logout();
-          }
-          else {
+          } else {
             toast.error('Failed to fetch data: '+ res.message);
           }
         }
         else if (reference.col.reference === 'audios') {
-          const audio_id = reference.item.audio_id as number;
+          const audio_id = (reference.item as Record<string, unknown>).audio_id as string;
+          if (!audio_id || audio_id === 'undefined' || audio_id === 'null') return;
           const res = await apiService.getReferenceAudio(audio_id, token as string);
           if (res.success) {
             setData(res.data);
           } else if(res.status && res.status === 401) {
             logout();
-          }
-          else {
+          } else {
             toast.error('Failed to fetch data: '+ res.message);
           }
         }
@@ -79,6 +82,9 @@ export default function ReferenceShow<T extends DataProps>({ setShowReference, r
           <DialogTitle className="text-xl font-semibold text-gray-800">
             Reference Data
           </DialogTitle>
+          <DialogDescription className="sr-only">
+            Reference data details
+          </DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
           {reference && Object.entries(data).length > 0 ? (
